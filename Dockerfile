@@ -2,7 +2,7 @@
 FROM laravelsail/php83-composer:latest
 
 # Set environment variables
-ENV NODE_VERSION=18.17.1
+ENV NODE_VERSION=20.11.1
 ENV NVM_DIR=/root/.nvm
 ENV PATH="${NVM_DIR}/versions/node/v${NODE_VERSION}/bin:${PATH}"
 
@@ -29,7 +29,7 @@ RUN mkdir -p ${NVM_DIR} \
     && nvm install ${NODE_VERSION} \
     && nvm use v${NODE_VERSION} \
     && nvm alias default v${NODE_VERSION} \
-    && npm install -g npm@latest
+    && npm install -g npm@10.2.4
 
 # Set working directory
 WORKDIR /app
