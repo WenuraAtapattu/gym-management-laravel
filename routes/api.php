@@ -16,9 +16,11 @@ Route::prefix('mongo')->group(function () {
     // Test MongoDB Connection
     Route::get('/test', [\App\Http\Controllers\TestMongoController::class, 'testConnection']);
 
-    // Public review routes
-    Route::apiResource('products.reviews', \App\Http\Controllers\API\MongoReviewController::class)
-        ->only(['index', 'show']);
+    // Public review routes (read-only)
+    Route::get('products/{product}/reviews', [\App\Http\Controllers\API\MongoReviewController::class, 'index'])
+        ->name('products.reviews.public.index');
+    Route::get('products/{product}/reviews/{review}', [\App\Http\Controllers\API\MongoReviewController::class, 'show'])
+        ->name('products.reviews.public.show');
 
     // Protected MongoDB routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -29,8 +31,12 @@ Route::prefix('mongo')->group(function () {
         Route::apiResource('products', \App\Http\Controllers\API\MongoProductController::class);
         
         // Reviews CRUD
-        Route::apiResource('products.reviews', \App\Http\Controllers\API\MongoReviewController::class)
-            ->only(['store', 'update', 'destroy']);
+        Route::post('products/{product}/reviews', [\App\Http\Controllers\API\MongoReviewController::class, 'store'])
+            ->name('products.reviews.store');
+        Route::put('products/{product}/reviews/{review}', [\App\Http\Controllers\API\MongoReviewController::class, 'update'])
+            ->name('products.reviews.update');
+        Route::delete('products/{product}/reviews/{review}', [\App\Http\Controllers\API\MongoReviewController::class, 'destroy'])
+            ->name('products.reviews.destroy');
             
         // Review stats
         Route::get('reviews/stats', [\App\Http\Controllers\API\MongoReviewController::class, 'stats']);
