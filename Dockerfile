@@ -48,9 +48,13 @@ RUN if [ ! -f .env ]; then \
 # Generate application key if not set
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
 
-# Cache configuration (skip route:cache to avoid route serialization issues)
-RUN php artisan config:cache && \
-    php artisan view:cache
+# Cache configuration
+RUN php artisan config:cache
+
+# Cache views if the views directory exists
+RUN if [ -d "resources/views" ]; then \
+        php artisan view:cache; \
+    fi
 
 # Install npm dependencies
 COPY package*.json /app/
