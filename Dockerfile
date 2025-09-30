@@ -23,10 +23,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Set working directory
 WORKDIR /app
 
-# Copy composer files first
+# Copy only composer files first
 COPY composer.json composer.lock /app/
 
-# Install PHP dependencies without running scripts
+# Install PHP dependencies without scripts
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
 # Copy the rest of the application
@@ -37,15 +37,19 @@ RUN chown -R www-data:www-data \
     /app/storage \
     /app/bootstrap/cache
 
-# Generate application key if not exists
+# Install dependencies with optimization (no scripts)
+RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
+
+# Copy .env if it doesn't exist
 RUN if [ ! -f .env ]; then \
-        cp .env.example .env && \
-        php artisan key:generate --force; \
+        cp .env.example .env; \
     fi
 
-# Install dependencies and optimize
-RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts && \
-    php artisan config:cache && \
+# Generate application key if not set
+RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
+
+# Cache configuration
+RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
