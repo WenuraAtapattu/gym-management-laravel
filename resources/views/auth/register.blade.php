@@ -97,6 +97,7 @@
                             <option value="BR" {{ old('country') == 'BR' ? 'selected' : '' }}>Brazil</option>
                             <option value="DE" {{ old('country') == 'DE' ? 'selected' : '' }}>Germany</option>
                             <option value="FR" {{ old('country') == 'FR' ? 'selected' : '' }}>France</option>
+                            <option value="LK" {{ old('country') == 'LK' ? 'selected' : '' }}>Sri Lanka</option>
                         </select>
                     </div>
                 </div>

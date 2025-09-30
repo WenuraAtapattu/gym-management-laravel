@@ -79,6 +79,11 @@ class AdminController extends Controller
 
     public function updateOrderStatus(Request $request, Order $order)
     {
+        // Double check that the user is an admin
+        if (!auth()->check() || !auth()->user()->is_admin) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'status' => 'required|in:pending,processing,shipped,delivered,cancelled,refunded'
         ]);

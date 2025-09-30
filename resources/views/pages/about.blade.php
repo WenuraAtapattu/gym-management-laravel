@@ -61,8 +61,15 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 <!-- Trainer 1 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-400">Trainer 1</span>
+                    <div class="w-full h-80 overflow-hidden bg-gray-100 flex items-center justify-center p-0">
+                        <div class="relative w-full h-full">
+                            <img 
+                                src="/images/trainers/sportive-man-black-shirt-holds-phone-shows-fist.jpg" 
+                                alt="John Smith" 
+                                class="w-full h-full object-cover object-center"
+                                style="object-position: center 30%;"
+                            >
+                        </div>
                     </div>
                     <div class="p-6">
                         <h4 class="text-xl font-semibold text-gray-900">John Smith</h4>
@@ -72,8 +79,10 @@
                 </div>
                 <!-- Trainer 2 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-400">Trainer 2</span>
+                    <div class="w-full h-64 overflow-hidden bg-gray-100 flex items-center justify-center p-2">
+                        <div class="relative w-full h-full">
+                            <img src="/images/trainers/beautiful-sportive-girl-posing-with-crossed-arms-dark-wall.jpg" alt="Sarah Johnson" class="absolute inset-0 w-full h-full object-cover object-center">
+                        </div>
                     </div>
                     <div class="p-6">
                         <h4 class="text-xl font-semibold text-gray-900">Sarah Johnson</h4>
@@ -83,8 +92,10 @@
                 </div>
                 <!-- Trainer 3 -->
                 <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-                        <span class="text-gray-400">Trainer 3</span>
+                    <div class="w-full h-64 overflow-hidden bg-gray-100 flex items-center justify-center p-2">
+                        <div class="relative w-full h-full">
+                            <img src="/images/trainers/fit-man-practicing-yoga.jpg" alt="Mike Davis" class="absolute inset-0 w-full h-full object-cover object-center">
+                        </div>
                     </div>
                     <div class="p-6">
                         <h4 class="text-xl font-semibold text-gray-900">Mike Davis</h4>

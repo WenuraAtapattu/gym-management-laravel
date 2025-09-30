@@ -26,7 +26,8 @@ class AdminProductController extends Controller
 
     public function create()
     {
-        return view('admin.products.create');
+        $categories = Category::all();
+        return view('admin.products.create', compact('categories'));
     }
 
     public function store(Request $request)
@@ -34,12 +35,17 @@ class AdminProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'image' => 'nullable|image|max:2048'
         ]);
+
+        // Handle checkbox values
+        $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_active'] = $request->has('is_active');
 
         $product = new Product();
         $product->fill($validated);
@@ -61,6 +67,11 @@ class AdminProductController extends Controller
     {
         $categories = Category::all();
         
+        // Ensure the product has a category_id set
+        if (is_null($product->category_id) && $categories->isNotEmpty()) {
+            $product->category_id = old('category_id', $categories->first()->id);
+        }
+        
         return view('admin.products.edit', [
             'product' => $product,
             'categories' => $categories
@@ -72,6 +83,7 @@ class AdminProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'is_featured' => 'boolean',
@@ -79,24 +91,36 @@ class AdminProductController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        $product->fill($validated);
-        $product->slug = Str::slug($request->name);
+        // Handle checkbox values
+        $validated['is_featured'] = $request->has('is_featured');
+        $validated['is_active'] = $request->has('is_active');
 
-        if ($request->hasFile('image')) {
-            // Delete old image if it exists
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
+        try {
+            $product->fill($validated);
+            $product->slug = Str::slug($request->name);
+
+            if ($request->hasFile('image')) {
+                // Delete old image if it exists
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                
+                $path = $request->file('image')->store('products', 'public');
+                $product->image = $path;
             }
-            
-            $path = $request->file('image')->store('products', 'public');
-            $product->image = $path;
+
+            $product->save();
+
+            return redirect()
+                ->route('admin.products.index')
+                ->with('success', 'Product updated successfully.');
+        } catch (\Exception $e) {
+            $categories = Category::all();
+            return back()
+                ->withInput()
+                ->withErrors(['error' => 'There was an error updating the product. Please try again.'])
+                ->with(compact('categories'));
         }
-
-        $product->save();
-
-        return redirect()
-            ->route('admin.products.index')
-            ->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Product $product)

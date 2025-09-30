@@ -73,7 +73,7 @@
                     </h3>
                 </div>
                 <div class="px-4 py-5 sm:p-6">
-                    <form action="{{ route('admin.orders.update-status', $order) }}" method="POST">
+                    <form action="{{ route('admin.orders.status', $order) }}" method="POST">
                         @csrf
                         <div class="flex items-center space-x-4">
                             <select id="status" name="status" class="flex-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
@@ -110,13 +110,11 @@
                     <div>
                         <h4 class="text-sm font-medium text-gray-900">Shipping</h4>
                         <address class="mt-1 text-sm text-gray-600 not-italic">
-                            {{ $order->shipping->name ?? $order->user->name }}<br>
-                            {{ $order->shipping->address_line1 }}<br>
-                            @if($order->shipping->address_line2)
-                                {{ $order->shipping->address_line2 }}<br>
-                            @endif
-                            {{ $order->shipping->city }}, {{ $order->shipping->state }} {{ $order->shipping->postal_code }}<br>
-                            {{ $order->shipping->country }}
+                            {{ $order->user->name }}<br>
+                            @php
+                                $shippingAddress = json_decode($order->shipping_address);
+                            @endphp
+                            {{ $shippingAddress->address ?? 'No shipping address provided' }}
                         </address>
                     </div>
                 </div>

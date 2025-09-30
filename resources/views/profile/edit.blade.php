@@ -15,7 +15,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('profile.update') }}" method="POST">
+                <form action="{{ route('account.update') }}" method="POST">
                     @csrf
                     @method('PUT')
                     
@@ -114,13 +114,12 @@
                                     @error('country')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
-                                </div>
                             </div>
                         </div>
                     </div>
                     
                     <div class="mt-8 flex justify-end space-x-4">
-                        <a href="{{ route('profile') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <a href="{{ route('account.show') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Cancel
                         </a>
                         <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -128,11 +127,11 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <div class="mt-10 border-t border-gray-200 pt-6">
                     <h3 class="text-lg font-medium text-gray-900 mb-4">Change Password</h3>
                     <p class="text-sm text-gray-600 mb-4">Ensure your account is using a long, random password to stay secure.</p>
-                    <a href="{{ route('profile.password.edit') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    <a href="{{ route('account.password.edit') }}" class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
                         Update Password
                     </a>
                 </div>

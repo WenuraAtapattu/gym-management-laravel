@@ -41,22 +41,31 @@ class TestMongoController extends Controller
     }
 
     private function buildDsn(array $config): string
-    {
-        $dsn = 'mongodb://';
-        
-        if (!empty($config['username']) && !empty($config['password'])) {
-            $dsn .= rawurlencode($config['username']) . ':' . 
-                    rawurlencode($config['password']) . '@';
-        }
-        
-        $dsn .= ($config['host'] ?? '127.0.0.1') . ':' . ($config['port'] ?? 27017);
-        
-        if (!empty($config['database'])) {
-            $dsn .= '/' . $config['database'];
-        }
-        
-        return $dsn;
+{
+    $dsn = 'mongodb://';
+    
+    if (!empty($config['username']) && !empty($config['password'])) {
+        $dsn .= rawurlencode($config['username']) . ':' . 
+                rawurlencode($config['password']) . '@';
     }
+    
+    $dsn .= ($config['host'] ?? '127.0.0.1') . ':' . ($config['port'] ?? 27017);
+    
+    $query = [];
+    if (!empty($config['database'])) {
+        $query['authSource'] = $config['options']['authSource'] ?? 'admin';
+    }
+    
+    if (!empty($config['database'])) {
+        $dsn .= '/' . $config['database'];
+    }
+    
+    if (!empty($query)) {
+        $dsn .= '?' . http_build_query($query);
+    }
+    
+    return $dsn;
+}
 
     private function handleError(string $message, \Exception $e): JsonResponse
     {

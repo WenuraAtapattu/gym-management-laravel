@@ -64,16 +64,20 @@ class CheckoutController extends Controller
                 return $item->quantity * $item->product->price;
             });
 
+            // Get authenticated user
+            $user = Auth::user();
+            
             // Create order
             $order = Order::create([
-                'user_id' => Auth::id(),
+                'user_id' => $user->id,
                 'order_number' => 'ORD-' . time() . '-' . strtoupper(substr(uniqid(), -6)),
                 'status' => 'pending',
                 'shipping_address' => json_encode($shippingAddress),
                 'payment_method' => $request->payment_method,
                 'subtotal' => $totalAmount,
                 'total' => $totalAmount,
-                'customer_email' => Auth::user()->email,
+                'customer_email' => $user->email,
+                'customer_phone' => $user->phone,
                 'payment_status' => 'pending'
             ]);
 

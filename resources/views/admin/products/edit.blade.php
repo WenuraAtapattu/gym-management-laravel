@@ -72,10 +72,10 @@
 
                         <!-- Stock -->
                         <div>
-                            <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
-                            <input type="number" name="stock" id="stock" min="0" value="{{ old('stock', $product->stock) }}" 
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('stock') border-red-500 @enderror">
-                            @error('stock')
+                            <label for="stock_quantity" class="block text-sm font-medium text-gray-700">Stock</label>
+                            <input type="number" name="stock_quantity" id="stock_quantity" min="0" value="{{ old('stock_quantity', $product->stock_quantity) }}" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('stock_quantity') border-red-500 @enderror">
+                            @error('stock_quantity')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>

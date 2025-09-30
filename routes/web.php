@@ -136,7 +136,7 @@ Route::prefix('admin')
         Route::prefix('orders')->name('orders.')->group(function () {
             Route::get('/', [AdminController::class, 'orders'])->name('index');
             Route::get('/{order}', [AdminController::class, 'orderDetails'])->name('show');
-            Route::put('/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('status');
+            Route::match(['put', 'post'], '/{order}/status', [AdminController::class, 'updateOrderStatus'])->name('status');
         });
         
         // Products

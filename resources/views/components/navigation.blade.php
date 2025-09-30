@@ -22,16 +22,16 @@ $currentRoute = request()->route() ? request()->route()->getName() : '';
                 <a href="{{ route('contact') }}" class="nav-link {{ $currentRoute === 'contact' ? 'active' : '' }}">Contact</a>
                 @auth
                     @if($isAdmin)
-                    <a href="{{ route('admin.dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Admin Dashboard</a>
-                @endif
-                <a href="{{ route('account.show') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Profile</a>
-                <form method="POST" action="{{ route('logout') }}" class="block">
+                        <a href="{{ route('admin.dashboard') }}" class="nav-link">Admin Dashboard</a>
+                    @endif
+                    <a href="{{ route('account.show') }}" class="nav-link">Profile</a>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
                         <button type="submit" class="nav-link">Logout</button>
                     </form>
                 @else
                     <a href="{{ route('login') }}" class="nav-link">Login</a>
-{{ ... }}
+                    <a href="{{ route('register') }}" class="nav-link">Register</a>
                 @endauth
             </div>
 

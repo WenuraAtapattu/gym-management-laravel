@@ -26,8 +26,36 @@ class ProductCategorySeeder extends Seeder
 
         // Create categories
         $categories = [
-            ['name' => 'Supplements', 'slug' => 'supplements', 'description' => 'Performance enhancing supplements for your fitness journey'],
-            ['name' => 'Equipment', 'slug' => 'equipment', 'description' => 'High-quality gym equipment for home and professional use'],
+            [
+                'name' => 'Protein', 
+                'slug' => 'protein', 
+                'description' => 'Whey protein, casein, and plant-based protein supplements'
+            ],
+            [
+                'name' => 'Pre-Workout', 
+                'slug' => 'pre-workout', 
+                'description' => 'Energy and endurance boosters for your workout sessions'
+            ],
+            [
+                'name' => 'Vitamins & Health', 
+                'slug' => 'vitamins-health', 
+                'description' => 'Essential vitamins and health supplements'
+            ],
+            [
+                'name' => 'Weight Management', 
+                'slug' => 'weight-management', 
+                'description' => 'Supplements to support weight loss and muscle gain'
+            ],
+            [
+                'name' => 'Strength Equipment', 
+                'slug' => 'strength-equipment', 
+                'description' => 'Dumbbells, barbells, and strength training gear'
+            ],
+            [
+                'name' => 'Cardio Machines', 
+                'slug' => 'cardio-machines', 
+                'description' => 'Treadmills, ellipticals, and other cardio equipment'
+            ],
             ['name' => 'Apparel', 'slug' => 'apparel', 'description' => 'Comfortable and stylish workout clothing'],
             ['name' => 'Accessories', 'slug' => 'accessories', 'description' => 'Essential fitness accessories'],
         ];
@@ -38,61 +66,32 @@ class ProductCategorySeeder extends Seeder
 
         // Get all categories
         $categoryIds = Category::pluck('id', 'slug');
-
         // Sample products
         $products = [
             [
                 'name' => 'Whey Protein Isolate',
-                'slug' => 'whey-protein-isolate',
-                'description' => 'Premium quality whey protein isolate with 25g of protein per serving',
+                'description' => 'Premium quality whey protein isolate with 90% protein content',
                 'price' => 49.99,
-                'image' => 'products/whey-protein.jpg',
                 'stock_quantity' => 100,
-                'category_id' => $categoryIds['supplements'],
+                'category_id' => $categoryIds['protein'],
                 'is_featured' => true,
                 'is_active' => true,
             ],
             [
-                'name' => 'Premium Dumbbell Set',
-                'slug' => 'premium-dumbbell-set',
-                'description' => 'Set of high-quality rubber hex dumbbells for home gym',
+                'name' => 'Pre-Workout Energizer',
+                'description' => 'Powerful pre-workout formula with beta-alanine and caffeine',
+                'price' => 34.99,
+                'stock_quantity' => 75,
+                'category_id' => $categoryIds['pre-workout'],
+                'is_featured' => true,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Adjustable Dumbbell Set',
+                'description' => 'Space-saving adjustable dumbbell set 5-25kg',
                 'price' => 199.99,
-                'image' => 'products/dumbbell-set.jpg',
-                'stock_quantity' => 50,
-                'category_id' => $categoryIds['equipment'],
-                'is_featured' => true,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Yoga Mat',
-                'slug' => 'yoga-mat',
-                'description' => 'Eco-friendly non-slip yoga mat for all types of workouts',
-                'price' => 29.99,
-                'image' => 'products/yoga-mat.jpg',
-                'stock_quantity' => 75,
-                'category_id' => $categoryIds['equipment'],
-                'is_featured' => false,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Training Gloves',
-                'slug' => 'training-gloves',
-                'description' => 'Padded weight lifting gloves for better grip and protection',
-                'price' => 24.99,
-                'image' => 'products/training-gloves.jpg',
-                'stock_quantity' => 75,
-                'category_id' => $categoryIds['accessories'],
-                'is_featured' => false,
-                'is_active' => true,
-            ],
-            [
-                'name' => 'Fitness Tracker',
-                'slug' => 'fitness-tracker',
-                'description' => 'Advanced fitness tracker with heart rate monitoring',
-                'price' => 89.99,
-                'image' => 'products/fitness-tracker.jpg',
                 'stock_quantity' => 30,
-                'category_id' => $categoryIds['accessories'],
+                'category_id' => $categoryIds['strength-equipment'],
                 'is_featured' => true,
                 'is_active' => true,
             ],
@@ -114,7 +113,7 @@ class ProductCategorySeeder extends Seeder
                 'price' => 34.99,
                 'image' => 'products/resistance-bands.jpg',
                 'stock_quantity' => 60,
-                'category_id' => $categoryIds['equipment'],
+                'category_id' => $categoryIds['accessories'],
                 'is_featured' => true,
                 'is_active' => true
             ],

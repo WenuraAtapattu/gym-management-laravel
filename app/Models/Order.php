@@ -71,6 +71,8 @@ class Order extends Model
         'discount_amount',
         'payment_status',
         'shipping_address',
+        'customer_email',
+        'customer_phone',
         'created_at',
         'updated_at'
     ];

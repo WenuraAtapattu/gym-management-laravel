@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -76,9 +77,8 @@ class ProductController extends Controller
 
         // Manually load reviews count and average rating for each product
         $products->each(function ($product) {
-            $reviews = \App\Models\MongoDB\Review::where('reviewable_id', (string) $product->id)
-                ->where('reviewable_type', 'App\\Models\\Product')
-                ->where('is_approved', true)
+            $reviews = Review::where('reviewable_id', $product->id)
+                ->where('reviewable_type', Product::class)
                 ->get();
             
             $product->reviews_count = $reviews->count();

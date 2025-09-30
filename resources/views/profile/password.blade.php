@@ -25,7 +25,7 @@
                     </div>
                 @endif
 
-                <form action="{{ route('profile.password.update') }}" method="POST" class="max-w-lg">
+                <form action="{{ route('account.password.update') }}" method="POST" class="max-w-lg">
                     @csrf
                     @method('PUT')
                     
