@@ -7,8 +7,8 @@ export default defineConfig({
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
+                fileURLToPath(new URL('./resources/css/app.css', import.meta.url)),
+                fileURLToPath(new URL('./resources/js/app.js', import.meta.url)),
             ],
             refresh: true,
         }),
