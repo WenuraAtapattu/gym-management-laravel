@@ -1,23 +1,69 @@
+# Git
 .git
 .gitignore
 .gitattributes
-.docker
+
+# IDE
 .vscode
 .idea
-node_modules
-*.md
-*.txt
-*.log
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build directories
+public/build
+public/hot
+public/storage
+
+# Environment files (will be handled separately)
+.env
+.env.*.local
+
+# OS specific
 .DS_Store
-.phpunit.result.cache
-.php_cs.cache
-.php-cs-fixer.cache
-*.log
-.DS_Store
+Thumbs.db
+
+# PHP
 .phpunit.result.cache
 .php_cs.cache
 .php-cs-fixer.cache
 .phpunit.cache
+
+# Debug
+*.log
+
+# Local development
+Homestead.json
+Homestead.yaml
+Homestead.yaml.backup
+Homestead.json.backup
+npm-debug.log
+yarn-error.log
+.phpunit.result.cache
+.php_cs.cache
+.php-cs-fixer.cache
+.phpunit.cache
+
+# Testing
+/coverage
+
+# Local development
+.env.local
+.env.*.local
+
+# Build files
+/public/build
+/public/hot
+/public/storage
+
+# Misc
+/.fleet
+/.vscode
+.idea
+.vscode
+*.sublime-*
 bootstrap/cache/*.php
 storage/*.key
 .env.*.local

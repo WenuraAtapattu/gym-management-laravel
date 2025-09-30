@@ -1,4 +1,10 @@
+# Use PHP 8.3 with Composer as base image
 FROM laravelsail/php83-composer:latest
+
+# Set environment variables
+ENV NODE_VERSION=18.17.1
+ENV NVM_DIR=/root/.nvm
+ENV PATH="${NVM_DIR}/versions/node/v${NODE_VERSION}/bin:${PATH}"
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -16,53 +22,50 @@ RUN apt-get update && apt-get install -y \
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
-    && apt-get install -y nodejs
+# Install NVM and Node.js
+RUN mkdir -p ${NVM_DIR} \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash \
+    && . "$NVM_DIR/nvm.sh" \
+    && nvm install ${NODE_VERSION} \
+    && nvm use v${NODE_VERSION} \
+    && nvm alias default v${NODE_VERSION} \
+    && npm install -g npm@latest
 
 # Set working directory
 WORKDIR /app
 
-# Copy only composer files first
+# Copy package files
+COPY package*.json /app/
+COPY vite.config.js /app/
+
+# Install npm dependencies
+RUN npm install --legacy-peer-deps --no-fund --no-audit
+
+# Copy composer files
 COPY composer.json composer.lock /app/
 
 # Install PHP dependencies without scripts
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
-# Copy the rest of the application except node_modules and other unnecessary files
+# Copy the rest of the application
 COPY . .
 
 # Set proper permissions
 RUN chown -R www-data:www-data \
     /app/storage \
-    /app/bootstrap/cache
+    /app/bootstrap/cache \
+    /app/public/build
 
-# Install dependencies with optimization (no scripts)
+# Install PHP dependencies with optimization
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
-# Copy .env if it doesn't exist
+# Generate .env if it doesn't exist
 RUN if [ ! -f .env ]; then \
         cp .env.example .env; \
     fi
 
 # Generate application key if not set
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
-
-# Cache configuration
-RUN php artisan config:cache
-
-# Cache views if the views directory exists
-RUN if [ -d "resources/views" ]; then \
-        php artisan view:cache; \
-    fi
-
-# Install npm dependencies
-RUN npm cache clean --force && \
-    npm install --legacy-peer-deps --no-fund --no-audit
-
-# Create required directories and set permissions
-RUN mkdir -p public/build && \
-    chown -R www-data:www-data /app/public/build
 
 # Build assets
 RUN npm run build
@@ -71,9 +74,11 @@ RUN npm run build
 RUN chown -R www-data:www-data /app/public/build
 
 # Optimize Laravel
-RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
+RUN php artisan config:cache \
+    && php artisan view:cache
+
+# Set working directory to public
+WORKDIR /app/public
 
 # Expose port 8000
 EXPOSE 8000
