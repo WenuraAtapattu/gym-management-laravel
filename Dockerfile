@@ -23,37 +23,42 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Set working directory
 WORKDIR /app
 
-# Copy only the necessary files for composer install
+# Copy composer files
 COPY composer.json composer.lock* /app/
 
 # Install PHP dependencies
-RUN composer install --no-scripts --no-autoloader --no-interaction --no-dev
+RUN composer install --no-interaction --no-dev --no-scripts --no-autoloader
 
-# Copy only the necessary files for npm install
-COPY package*.json /app/
-COPY vite.config.js /app/
+# Generate optimized autoload files
+RUN composer dump-autoload --optimize --no-dev
 
-# Install npm dependencies with clean cache
-ENV DOCKER_BUILD=true
-RUN npm cache clean --force && \
-    npm install --legacy-peer-deps --no-fund --no-audit
-
-# Copy the rest of the application
+# Copy application files
 COPY . .
-
-# Generate application key and optimize
-RUN php artisan key:generate --force && \
-    php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan view:cache
-
-# Build assets
-RUN npm run build
 
 # Set permissions
 RUN chown -R www-data:www-data \
     /app/storage \
     /app/bootstrap/cache
+
+# Generate application key if not exists
+RUN if [ ! -f .env ]; then \
+        cp .env.example .env && \
+        php artisan key:generate --force; \
+    fi
+
+# Install npm dependencies
+COPY package*.json /app/
+COPY vite.config.js /app/
+RUN npm cache clean --force && \
+    npm install --legacy-peer-deps --no-fund --no-audit
+
+# Build assets
+RUN npm run build
+
+# Optimize Laravel
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
 # Expose port 8000
 EXPOSE 8000
