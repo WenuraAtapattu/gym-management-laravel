@@ -20,16 +20,17 @@ RUN pecl install mongodb \
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs
 
+# Set working directory
+WORKDIR /app
+
+# Copy package files first for better layer caching
+COPY package*.json ./
+
 # Install npm dependencies
-COPY package*.json /app/
-RUN if [ -f package-lock.json ]; then \
-        npm ci; \
-    else \
-        npm install; \
-    fi
+RUN npm install
 
 # Copy application files
-COPY . /app/
+COPY . .
 
 # Set working directory
 WORKDIR /app
