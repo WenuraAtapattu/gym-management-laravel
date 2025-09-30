@@ -47,6 +47,9 @@ COPY composer.json composer.lock /app/
 # Install PHP dependencies without scripts
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
+# Create necessary directories
+RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
+
 # Copy the rest of the application
 COPY . .
 
