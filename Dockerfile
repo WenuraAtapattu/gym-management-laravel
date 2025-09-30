@@ -29,7 +29,7 @@ COPY composer.json composer.lock /app/
 # Install PHP dependencies without scripts
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
-# Copy the rest of the application
+# Copy the rest of the application except node_modules and other unnecessary files
 COPY . .
 
 # Set proper permissions
@@ -56,14 +56,10 @@ RUN if [ -d "resources/views" ]; then \
         php artisan view:cache; \
     fi
 
-# Install npm dependencies
-COPY package*.json /app/
-COPY vite.config.js /app/
+# Install npm dependencies and build assets in one layer to reduce image size
 RUN npm cache clean --force && \
-    npm install --legacy-peer-deps --no-fund --no-audit
-
-# Build assets
-RUN npm run build
+    npm install --legacy-peer-deps --no-fund --no-audit && \
+    npm run build
 
 # Optimize Laravel
 RUN php artisan config:cache && \
