@@ -34,9 +34,15 @@ RUN mkdir -p ${NVM_DIR} \
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files and application code first
 COPY package*.json /app/
 COPY vite.config.js /app/
+
+# Create necessary directories
+RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
+
+# Copy only the necessary files for npm install
+COPY resources/ /app/resources/
 
 # Install npm dependencies
 RUN npm install --legacy-peer-deps --no-fund --no-audit
@@ -53,11 +59,15 @@ RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
 # Copy the rest of the application
 COPY . .
 
+# Ensure the resources directory exists
+RUN mkdir -p /app/resources/css /app/resources/js
+
 # Set proper permissions
 RUN chown -R www-data:www-data \
     /app/storage \
     /app/bootstrap/cache \
-    /app/public/build
+    /app/public/build \
+    /app/resources
 
 # Install PHP dependencies with optimization
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
@@ -72,6 +82,9 @@ RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || tr
 
 # Build assets
 RUN npm run build
+
+# Ensure the build directory has the correct permissions
+RUN chown -R www-data:www-data /app/public/build
 
 # Set proper permissions after build
 RUN chown -R www-data:www-data /app/public/build
