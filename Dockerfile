@@ -23,6 +23,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Set working directory
 WORKDIR /app
 
+# Copy only the necessary files for composer install
+COPY composer.json composer.lock* /app/
+
+# Install PHP dependencies
+RUN composer install --no-scripts --no-autoloader --no-interaction --no-dev
+
 # Copy only the necessary files for npm install
 COPY package*.json /app/
 COPY vite.config.js /app/
@@ -35,16 +41,19 @@ RUN npm cache clean --force && \
 # Copy the rest of the application
 COPY . .
 
+# Generate application key and optimize
+RUN php artisan key:generate --force && \
+    php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
+
+# Build assets
+RUN npm run build
+
 # Set permissions
 RUN chown -R www-data:www-data \
     /app/storage \
     /app/bootstrap/cache
-
-# Generate application key
-RUN php artisan key:generate
-
-# Build assets (without the postinstall hook to prevent double build)
-RUN npm run build
 
 # Expose port 8000
 EXPOSE 8000
