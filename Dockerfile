@@ -23,17 +23,17 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Set working directory
 WORKDIR /app
 
-# Copy composer files
-COPY composer.json composer.lock* /app/
+# Copy only composer files first
+COPY composer.json composer.lock /app/
 
-# Install PHP dependencies
-RUN composer install --no-interaction --no-dev --no-scripts --no-autoloader
+# Install PHP dependencies without running scripts
+RUN composer install --no-interaction --no-scripts --no-autoloader --no-dev
 
-# Generate optimized autoload files
-RUN composer dump-autoload --optimize --no-dev
-
-# Copy application files
+# Copy the rest of the application
 COPY . .
+
+# Now run composer install with scripts to set up the application
+RUN composer install --no-interaction --no-dev --optimize-autoloader
 
 # Set permissions
 RUN chown -R www-data:www-data \
