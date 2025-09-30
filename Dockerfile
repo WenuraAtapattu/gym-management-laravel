@@ -34,12 +34,12 @@ RUN mkdir -p ${NVM_DIR} \
 # Set working directory
 WORKDIR /app
 
-# Copy package files and application code first
-COPY package*.json /app/
-COPY vite.config.js /app/
-
 # Create necessary directories
 RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
+
+# Copy package files first
+COPY package*.json /app/
+COPY vite.config.js /app/
 
 # Copy only the necessary files for npm install
 COPY resources/ /app/resources/
@@ -81,7 +81,7 @@ RUN if [ ! -f .env ]; then \
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
 
 # Build assets
-RUN npm run build
+RUN cd /app && npm run build
 
 # Ensure the build directory has the correct permissions
 RUN chown -R www-data:www-data /app/public/build
