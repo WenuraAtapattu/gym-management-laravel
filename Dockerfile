@@ -36,6 +36,9 @@ COPY . .
 # Set working directory
 WORKDIR /app
 
+# Build assets
+RUN npm run build
+
 # Generate application key
 RUN php artisan key:generate
 
