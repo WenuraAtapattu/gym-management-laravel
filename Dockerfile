@@ -23,29 +23,28 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Set working directory
 WORKDIR /app
 
-# Copy package files first for better layer caching
-COPY package*.json ./
+# Copy only the necessary files for npm install
+COPY package*.json /app/
+COPY vite.config.js /app/
 
 # Install npm dependencies with clean cache
+ENV DOCKER_BUILD=true
 RUN npm cache clean --force && \
-    npm install --legacy-peer-deps
+    npm install --legacy-peer-deps --no-fund --no-audit
 
-# Copy application files
+# Copy the rest of the application
 COPY . .
 
-# Set working directory
-WORKDIR /app
-
-# Build assets
-RUN npm run build
+# Set permissions
+RUN chown -R www-data:www-data \
+    /app/storage \
+    /app/bootstrap/cache
 
 # Generate application key
 RUN php artisan key:generate
 
-# Set up storage and cache permissions
-RUN chown -R www-data:www-data \
-    /app/storage \
-    /app/bootstrap/cache
+# Build assets (without the postinstall hook to prevent double build)
+RUN npm run build
 
 # Expose port 8000
 EXPOSE 8000

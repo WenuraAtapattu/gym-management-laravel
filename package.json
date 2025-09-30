@@ -4,7 +4,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build --emptyOutDir",
-        "postinstall": "npm run build"
+        "postinstall": "[ -z \"$DOCKER_BUILD\" ] && npm run build || true"
     },
     "engines": {
         "node": ">=16.0.0",
