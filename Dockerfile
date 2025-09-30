@@ -22,7 +22,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 
 # Install npm dependencies
 COPY package*.json /app/
-RUN npm ci
+RUN if [ -f package-lock.json ]; then \
+        npm ci; \
+    else \
+        npm install; \
+    fi
 
 # Copy application files
 COPY . /app/
