@@ -56,10 +56,19 @@ RUN if [ -d "resources/views" ]; then \
         php artisan view:cache; \
     fi
 
-# Install npm dependencies and build assets in one layer to reduce image size
+# Install npm dependencies
 RUN npm cache clean --force && \
-    npm install --legacy-peer-deps --no-fund --no-audit && \
-    npm run build
+    npm install --legacy-peer-deps --no-fund --no-audit
+
+# Create required directories and set permissions
+RUN mkdir -p public/build && \
+    chown -R www-data:www-data /app/public/build
+
+# Build assets
+RUN npm run build
+
+# Set proper permissions after build
+RUN chown -R www-data:www-data /app/public/build
 
 # Optimize Laravel
 RUN php artisan config:cache && \

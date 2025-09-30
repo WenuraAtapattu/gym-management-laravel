@@ -6,7 +6,21 @@ import { fileURLToPath, URL } from 'url';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+        'resources/css/app.css',
+        'resources/js/app.js',
+    ],
+    build: {
+        outDir: 'public/build',
+        emptyOutDir: true,
+        manifest: true,
+        rollupOptions: {
+            input: {
+                app: 'resources/js/app.js',
+                css: 'resources/css/app.css'
+            }
+        }
+    },
             refresh: true,
         }),
         vue({
