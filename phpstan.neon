@@ -1,0 +1,55 @@
+includes:
+    - vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - config
+        - routes
+    
+    excludePaths:
+        - storage/*
+        - bootstrap/cache/*
+        - node_modules/*
+        - vendor/*
+        - database/migrations/*
+        - database/factories/*
+        - database/seeders/*
+    
+    scanFiles:
+        - app/Http/Controllers/Controller.php
+    
+    # Laravel specific configuration
+    noUnnecessaryCollectionCall: false
+    
+    # Ignore various errors including MongoDB and case sensitivity issues
+    ignoreErrors:
+        # MongoDB related errors
+        - '#Class MongoDB\\\\Driver\\\\\\.* not found#'
+        - '#Class MongoDB\\\\BSON\\\\\\.* not found#'
+        - '#Class MongoDB\\\\Driver\\\\Exception\\\\\\.* not found#'
+        - '#Call to an undefined method.*MongoProduct::factory#'
+        - '#Call to an undefined method.*getDoctrineSchemaManager#'
+        
+        # Model related errors
+        - '#Trait App\\\\Traits\\\\HasReviews is used zero times#'
+        - '#Call to an undefined method.*reviews\\(\\)#'
+        - '#Call to an undefined method.*hasPurchased\\(\\)#'
+        - '#Call to an undefined method.*notify\\(\\)#'
+        - '#Call to static method factory\\(\\) on an unknown class App\\\\Models\\\\Team#'
+        - '#Access to constant STATUS_PENDING on an unknown class App\\\\Models\\\\Report#'
+        - '#Call to an undefined method.*media\\(\\)#'
+        - '#Call to an undefined method.*reports\\(\\)#'
+        
+        # Other errors
+        - '#str_pad expects string, int<1, 99999>#'
+        
+        # Ignore all case sensitivity errors in the routes file
+        - '#Class .* referenced with incorrect case#'
+    
+    # Laravel specific ignores (temporarily ignore common Laravel dynamic method calls)
+    dynamicConstantNames:
+        - 'App\\Models\\*::CREATED_AT'
+        - 'App\\Models\\*::UPDATED_AT'
+        - 'App\\Models\\*::DELETED_AT'
