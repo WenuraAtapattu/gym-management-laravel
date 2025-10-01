@@ -39,26 +39,19 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'dsn' => 'mongodb://' . 
-                    'iad2-c19-2.mongo.objectrocket.com:53165,' .
-                    'iad2-c19-0.mongo.objectrocket.com:53165,' .
-                    'iad2-c19-1.mongo.objectrocket.com:53165' .
-                    '/gym_management?replicaSet=7e67689a3051423084d376fca156b8cf&ssl=true' .
-                    '&authSource=admin',
-                'database' => 'gym_management',
+                'host' => env('DB_HOST', '127.0.0.1'),
+                'port' => env('DB_PORT', 27017),
+                'database' => env('DB_DATABASE', 'gym_management'),
+                'username' => env('DB_USERNAME'),
+                'password' => env('DB_PASSWORD'),
                 'options' => [
-                    'replicaSet' => '7e67689a3051423084d376fca156b8cf',
-                    'ssl' => true,
+                    'tls' => true,
+                    'tlsAllowInvalidCertificates' => false,
+                    'authSource' => 'admin',
                     'retryWrites' => true,
                     'w' => 'majority',
-                    'readConcern' => [
-                        'level' => 'majority'
-                    ],
-                    'readPreference' => 'primaryPreferred',
-                    'authSource' => 'admin',
-                ]
+                ],
             ],
-
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
