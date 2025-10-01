@@ -39,10 +39,11 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => rtrim(env('ORMONGO_RS_URL'), '/') . '/gym_management?authSource=admin',
+            'dsn' => env('ORMONGO_RS_URL'),
+            'database' => 'gym_management',
             'options' => [
-                'ssl' => true,
                 'replicaSet' => '7e67689a3051423084d376fca156b8cf',
+                'ssl' => true,
                 'retryWrites' => true,
                 'w' => 'majority',
                 'readConcern' => [
