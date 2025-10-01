@@ -39,11 +39,10 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('ORMONGO_RS_URL'),
-            'database' => 'gym_management',
+            'dsn' => rtrim(env('ORMONGO_RS_URL'), '/') . '/gym_management?authSource=admin',
             'options' => [
                 'ssl' => true,
-                'replicaSet' => 'rs',
+                'replicaSet' => '7e67689a3051423084d376fca156b8cf',
                 'retryWrites' => true,
                 'w' => 'majority',
                 'readConcern' => [
@@ -54,20 +53,11 @@ return [
                 'maxPoolSize' => 100,
                 'minPoolSize' => 5,
                 'maxIdleTimeMS' => 60000,
-                'serverSelectionTimeoutMS' => 60000,
+                'serverSelectionTimeoutMS' => 30000,
                 'connectTimeoutMS' => 15000,
-                'socketTimeoutMS' => 45000,
+                'socketTimeoutMS' => 30000,
                 'heartbeatFrequencyMS' => 10000,
                 'serverSelectionTryOnce' => false,
-            ],
-            'driver_options' => [
-                'context' => stream_context_create([
-                    'ssl' => [
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true,
-                    ]
-                ])
             ]
         ],
 
