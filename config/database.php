@@ -11,9 +11,13 @@ return [
             'database' => env('MONGODB_DATABASE', 'laravel_sem2'),
             'options' => [
                 'tls' => true,
-                'tlsInsecure' => true,
+                'tlsAllowInvalidCertificates' => false,
+                'tlsAllowInvalidHostnames' => false,
                 'retryWrites' => true,
                 'w' => 'majority',
+                'serverSelectionTimeoutMS' => 5000,
+                'connectTimeoutMS' => 5000,
+                'socketTimeoutMS' => 5000,
             ],
         ],
         'mysql' => [
