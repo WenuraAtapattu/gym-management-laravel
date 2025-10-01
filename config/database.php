@@ -39,26 +39,17 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'host' => 'ac-mqgtkcu-shard-00-00.qi715iy.mongodb.net',
-                'port' => 27017,
+                'dsn' => 'mongodb+srv://heroku_user:79820035v@cluster0.qi715iy.mongodb.net/gym_management?retryWrites=true&w=majority',
                 'database' => 'gym_management',
-                'username' => 'heroku_user',
-                'password' => '79820035v',
                 'options' => [
-                    'replicaSet' => 'atlas-13i5yf-shard-0',
-                    'ssl' => true,
+                    'tls' => true,
+                    'tlsInsecure' => false,
                     'authSource' => 'admin',
                     'retryWrites' => true,
                     'w' => 'majority',
-                ],
-                'driver_options' => [
-                    'context' => stream_context_create([
-                        'ssl' => [
-                            'verify_peer' => false,
-                            'verify_peer_name' => false,
-                            'allow_self_signed' => true
-                        ]
-                    ])
+                    'connectTimeoutMS' => 30000,
+                    'socketTimeoutMS' => 30000,
+                    'serverSelectionTimeoutMS' => 30000,
                 ]
             ],
         'mariadb' => [
