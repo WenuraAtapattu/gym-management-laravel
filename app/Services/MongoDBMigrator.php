@@ -6,7 +6,7 @@ use MongoDB\Client as MongoClient;
 use MongoDB\Operation\BulkWrite;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use MongoDB\BSON\UTCDateTime;
+use MongoDB\BSON\UTCDateTime as MongoUTCDateTime;
 use Exception;
 use ErrorException;
 
@@ -94,7 +94,8 @@ class MongoDBMigrator
             if (!empty($rows)) {
                 $documents = $this->convertToMongoDocuments($rows, $columns);
                 $result = $this->insertIntoMongoDB($tableName, $documents);
-                $tableReport['rows_inserted'] = $result->getInsertedCount();
+                $tableReport['rows_inserted'] = $result->insertedCount + $result->upsertedCount;
+                $tableReport['rows_modified'] = $result->modifiedCount;
             }
 
             Log::info("Migrated table: $tableName ({$tableReport['rows_inserted']} rows)");
@@ -208,57 +209,90 @@ class MongoDBMigrator
     {
         if (empty($documents)) {
             Log::info("No documents to insert into collection: " . $collectionName);
-            return 0;
+            return (object)['insertedCount' => 0, 'modifiedCount' => 0, 'upsertedCount' => 0];
         }
         
         $collection = $this->mongoDb->selectCollection($collectionName);
         $operations = [];
-        $insertedCount = 0;
+        $result = (object)[
+            'insertedCount' => 0,
+            'modifiedCount' => 0,
+            'upsertedCount' => 0
+        ];
         
         try {
-            // Use bulk write with updateOne and upsert:true to handle duplicates
-            foreach ($documents as $doc) {
-                if (!isset($doc['_id'])) {
-                    Log::warning("Document missing _id field", ['collection' => $collectionName, 'doc' => $doc]);
-                    continue;
+            // Process documents in batches of 100
+            $batchSize = 100;
+            $totalDocuments = count($documents);
+            $processed = 0;
+            
+            while ($processed < $totalDocuments) {
+                $batch = array_slice($documents, $processed, $batchSize);
+                $batchOperations = [];
+                
+                foreach ($batch as $doc) {
+                    if (!isset($doc['_id'])) {
+                        Log::warning("Document missing _id field", ['collection' => $collectionName]);
+                        continue;
+                    }
+                    
+                    $batchOperations[] = [
+                        'updateOne' => [
+                            ['_id' => $doc['_id']],
+                            ['$set' => $doc],
+                            ['upsert' => true]
+                        ]
+                    ];
                 }
                 
-                $operations[] = [
-                    'updateOne' => [
-                        ['_id' => $doc['_id']],
-                        ['$set' => $doc],
-                        ['upsert' => true]
-                    ]
-                ];
-                
-                // Execute in batches of 100 to avoid memory issues
-                if (count($operations) >= 100) {
-                    $result = $collection->bulkWrite($operations);
-                    $insertedCount += ($result->getUpsertedCount() + $result->getModifiedCount());
-                    $operations = [];
+                if (!empty($batchOperations)) {
+                    $batchResult = $collection->bulkWrite($batchOperations);
+                    $result->insertedCount += $batchResult->getInsertedCount();
+                    $result->modifiedCount += $batchResult->getModifiedCount();
+                    $result->upsertedCount += $batchResult->getUpsertedCount();
                 }
+                
+                $processed += count($batch);
+                $remaining = $totalDocuments - $processed;
+                Log::info(sprintf(
+                    'Processed %d/%d documents (%.1f%%) for collection: %s',
+                    $processed,
+                    $totalDocuments,
+                    ($processed / $totalDocuments) * 100,
+                    $collectionName
+                ));
             }
             
-            // Execute any remaining operations
-            if (!empty($operations)) {
-                $result = $collection->bulkWrite($operations);
-                $insertedCount += ($result->getUpsertedCount() + $result->getModifiedCount());
-            }
-            
+            $totalProcessed = $result->insertedCount + $result->modifiedCount + $result->upsertedCount;
             Log::info(sprintf(
-                'Inserted/Updated %d documents into collection: %s',
-                $insertedCount,
-                $collectionName
+                'Completed processing %s: %d inserted, %d modified, %d upserted (total: %d)',
+                $collectionName,
+                $result->insertedCount,
+                $result->modifiedCount,
+                $result->upsertedCount,
+                $totalProcessed
             ));
             
-            return $insertedCount;
+            return $result;
             
-        
-        if (!empty($operations)) {
-            return $collection->bulkWrite($operations);
+        } catch (\Exception $e) {
+            Log::error(sprintf(
+                'Error processing collection %s: %s',
+                $collectionName,
+                $e->getMessage()
+            ), [
+                'exception' => get_class($e),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Return partial results if available
+            if (isset($result)) {
+                return $result;
+            }
+            
+            // If we don't have a result yet, rethrow the exception
+            throw $e;
         }
-        
-        return null;
     }
 
     /**
@@ -268,7 +302,7 @@ class MongoDBMigrator
     {
         try {
             if (class_exists('MongoDB\\BSON\\UTCDateTime')) {
-                return new \MongoDB\BSON\UTCDateTime($milliseconds);
+                return new MongoUTCDateTime($milliseconds);
             }
             
             // Fallback for when the MongoDB extension is not properly loaded
@@ -277,10 +311,13 @@ class MongoDBMigrator
                 return $class->newInstance($milliseconds);
             }
             
-            throw new \RuntimeException('MongoDB\BSON\UTCDateTime class is not available');
+            // If we can't create a UTCDateTime, return the original value
+            Log::warning('Could not create UTCDateTime, returning original value');
+            return $milliseconds;
+            
         } catch (\Exception $e) {
-            Log::error('Failed to create UTCDateTime: ' . $e->getMessage());
-            throw $e;
+            Log::error('Failed to create UTCDateTime: ' . $e->getMessage() . ' - Using original value instead');
+            return $milliseconds;
         }
     }
 

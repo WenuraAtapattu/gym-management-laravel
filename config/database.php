@@ -39,19 +39,17 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'dsn' => env('MONGODB_URI', 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority'),
-                'database' => env('MONGODB_DATABASE', 'laravel_sem2'),
+                'dsn' => 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority',
+                'database' => 'laravel_sem2',
                 'options' => [
                     'tls' => true,
-                    'tlsAllowInvalidCertificates' => env('APP_ENV') !== 'production',
-                    'tlsAllowInvalidHostnames' => env('APP_ENV') !== 'production',
-                    'authSource' => env('MONGODB_AUTH_SOURCE', 'admin'),
+                    'authSource' => 'admin',
                     'retryWrites' => true,
                     'w' => 'majority',
                     'serverSelectionTimeoutMS' => 10000,
                     'socketTimeoutMS' => 45000,
                     'connectTimeoutMS' => 10000,
-                ]
+                ],
             ],
         'mariadb' => [
             'driver' => 'mariadb',

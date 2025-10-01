@@ -46,6 +46,9 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        
+        // MongoDB Service Provider
+        App\Providers\MongoDBServiceProvider::class,
     ],
 
     'aliases' => [
