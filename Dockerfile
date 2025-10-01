@@ -37,11 +37,19 @@ WORKDIR /app
 # Create necessary directories
 RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
 
-# Copy only the necessary files first
+# Copy package files first
 COPY --chown=www-data:www-data composer.json composer.lock /app/
 COPY --chown=www-data:www-data package*.json /app/
 COPY --chown=www-data:www-data vite.config.js /app/
-COPY --chown=www-data:www-data resources/ /app/resources/
+
+# Ensure resources directory structure exists
+RUN mkdir -p /app/resources/css /app/resources/js /app/resources/views /app/resources/markdown
+
+# Copy resources directory contents
+COPY --chown=www-data:www-data resources/css/ /app/resources/css/
+COPY --chown=www-data:www-data resources/js/ /app/resources/js/
+COPY --chown=www-data:www-data resources/views/ /app/resources/views/
+COPY --chown=www-data:www-data resources/markdown/ /app/resources/markdown/
 
 # Install npm dependencies
 RUN npm install --legacy-peer-deps --no-fund --no-audit
