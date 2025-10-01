@@ -35,17 +35,25 @@ RUN mkdir -p ${NVM_DIR} \
 WORKDIR /app
 
 # Create necessary directories
-RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
-
-# Create necessary directories
 RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build /app/resources/css /app/resources/js
 
-# Copy package files first
+# Set proper ownership
+RUN chown -R www-data:www-data /app
+
+# Copy package files and config
 COPY --chown=www-data:www-data package*.json /app/
 COPY --chown=www-data:www-data vite.config.js /app/
 
-# Copy resources directory
+# Copy resources directory first
 COPY --chown=www-data:www-data resources/ /app/resources/
+
+# Verify resources are copied
+RUN echo "=== Resources directory ===" && \
+    ls -la /app/resources/ && \
+    echo "\n=== CSS directory ===" && \
+    ls -la /app/resources/css/ && \
+    echo "\n=== JS directory ===" && \
+    ls -la /app/resources/js/
 
 # Install npm dependencies
 RUN npm install --legacy-peer-deps --no-fund --no-audit
@@ -53,15 +61,15 @@ RUN npm install --legacy-peer-deps --no-fund --no-audit
 # Copy composer files
 COPY --chown=www-data:www-data composer.json composer.lock /app/
 
-# Install PHP dependencies without scripts
+# Install PHP dependencies
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
-# Copy the rest of the application
+# Copy the rest of the application (excluding node_modules and vendor)
 COPY --chown=www-data:www-data . /app/
 
 # Set proper permissions
 RUN chown -R www-data:www-data /app && \
-    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build /app/resources/css /app/resources/js
+    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build
 
 # Install PHP dependencies with optimization
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
@@ -73,10 +81,6 @@ RUN if [ ! -f .env ]; then \
 
 # Generate application key if not set
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
-
-# Create build directory and set permissions
-RUN mkdir -p /app/public/build && \
-    chown -R www-data:www-data /app/public/build
 
 # Debug file structure
 RUN echo "=== Current working directory ===" && \
