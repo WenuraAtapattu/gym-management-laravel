@@ -4,22 +4,19 @@ use Illuminate\Support\Str;
 
 return [
     'default' => env('DB_CONNECTION', 'mysql'),
+
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
             'dsn' => env('MONGODB_URI', 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority'),
             'database' => env('MONGODB_DATABASE', 'laravel_sem2'),
             'options' => [
-                'tls' => true,
-                'tlsAllowInvalidCertificates' => false,
-                'tlsAllowInvalidHostnames' => false,
                 'retryWrites' => true,
                 'w' => 'majority',
-                'serverSelectionTimeoutMS' => 5000,
-                'connectTimeoutMS' => 5000,
-                'socketTimeoutMS' => 5000,
+                'serverSelectionTimeoutMS' => 15000,
             ],
         ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -40,7 +37,9 @@ return [
             ]) : [],
         ],
     ],
+
     'migrations' => 'migrations',
+
     'redis' => [
         'client' => env('REDIS_CLIENT', 'phpredis'),
         'options' => [
