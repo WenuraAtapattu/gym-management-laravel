@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
+    build-essential \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 # Install MongoDB extension
@@ -56,6 +57,9 @@ RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
 # Copy the rest of the application
 COPY --chown=www-data:www-data . /app/
+
+# Set DOCKER_BUILD to skip postinstall during npm ci
+ENV DOCKER_BUILD=true
 
 # Set proper permissions
 RUN chown -R www-data:www-data /app && \
