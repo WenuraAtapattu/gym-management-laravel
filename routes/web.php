@@ -18,6 +18,9 @@ use App\Http\Controllers\{
 };
 use Illuminate\Support\Facades\Route;
 
+// Test MongoDB Connection
+Route::get('/test-mongo', [TestMongoController::class, 'testConnection']);
+
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

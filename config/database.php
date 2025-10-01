@@ -39,8 +39,7 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('ORMONGO_RS_URL'),
-            'database' => 'gym_management',
+            'dsn' => env('MONGODB_URI', env('ORMONGO_RS_URL')),
             'options' => [
                 'replicaSet' => '7e67689a3051423084d376fca156b8cf',
                 'ssl' => true,
