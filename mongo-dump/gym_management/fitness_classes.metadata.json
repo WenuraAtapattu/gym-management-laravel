@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"ea3d9fa67a734cd7be88855576164b01","collectionName":"fitness_classes","type":"collection"}

@@ -1,0 +1,23 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use MongoDB\Client as MongoClient;
+
+class FixMongodbMigration extends Migration
+{
+    public function up()
+    {
+        // This migration is just a placeholder to include the migration class
+        // The actual migration will be run through the Artisan command
+    }
+
+    public function down()
+    {
+        // No rollback needed as this is a one-way migration
+    }
+}
+
+// Include the migration class in the global namespace
+class_alias(\App\Services\MongoDBMigrator::class, 'MigrateToMongoDB');

@@ -39,16 +39,16 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'dsn' => 'mongodb+srv://heroku_user:79820035v@cluster0.qi715iy.mongodb.net/gym_management?retryWrites=true&w=majority',
-                'database' => 'gym_management',
+                'dsn' => env('MONGODB_URI', 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority'),
+                'database' => env('MONGODB_DATABASE', 'laravel_sem2'),
                 'options' => [
                     'tls' => true,
-                    'tlsAllowInvalidCertificates' => true,
-                    'tlsAllowInvalidHostnames' => true,
-                    'authSource' => 'admin',
+                    'tlsAllowInvalidCertificates' => env('APP_ENV') !== 'production',
+                    'tlsAllowInvalidHostnames' => env('APP_ENV') !== 'production',
+                    'authSource' => env('MONGODB_AUTH_SOURCE', 'admin'),
                     'retryWrites' => true,
                     'w' => 'majority',
-                    'serverSelectionTimeoutMS' => 5000,
+                    'serverSelectionTimeoutMS' => 10000,
                     'socketTimeoutMS' => 45000,
                     'connectTimeoutMS' => 10000,
                 ]

@@ -1,0 +1,182 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use MongoDB\Client as MongoClient;
+
+class CreateMongodbMigrationScript extends Migration
+{
+    public function up()
+    {
+        // This is a placeholder migration to create the MongoDB migration script
+        // The actual migration will be run through Artisan command
+    }
+
+    public function down()
+    {
+        // No rollback needed as this is a one-way migration
+    }
+}
+
+if (!class_exists('MigrateToMongoDB')) {
+    class MigrateToMongoDB
+    {
+        private $mysqlConnection;
+        private $mongoClient;
+        private $mongoDb;
+        private $report = [];
+
+        public function __construct()
+        {
+            $this->mysqlConnection = DB::connection('mysql');
+            
+            $mongoUri = config('database.connections.mongodb.uri', 'mongodb://localhost:27017');
+            $mongoDb = config('database.connections.mongodb.database', 'laravel_sem2');
+            
+            $this->mongoClient = new MongoClient($mongoUri, [
+                'tls' => config('database.connections.mongodb.tls', false),
+                'tlsInsecure' => config('app.env') !== 'production',
+            ]);
+            
+            $this->mongoDb = $this->mongoClient->selectDatabase($mongoDb);
+            
+            set_error_handler(function($errno, $errstr, $errfile, $errline) {
+                throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+            });
+        }
+
+        public function migrate()
+        {
+            try {
+                $tables = $this->getMySQLTables();
+                $this->report['started_at'] = now()->toDateTimeString();
+                $this->report['tables'] = [];
+
+                foreach ($tables as $table) {
+                    $this->migrateTable($table);
+                }
+
+                $this->report['completed_at'] = now()->toDateTimeString();
+                $this->generateReport();
+                
+                return $this->report;
+            } catch (Exception $e) {
+                Log::error('Migration failed: ' . $e->getMessage());
+                throw $e;
+            }
+        }
+
+        private function getMySQLTables()
+        {
+            return $this->mysqlConnection->select('SHOW TABLES');
+        }
+
+        private function migrateTable($tableInfo)
+        {
+            $tableName = $tableInfo->{'Tables_in_' . config('database.connections.mysql.database')};
+            
+            $tableReport = [
+                'name' => $tableName,
+                'rows_processed' => 0,
+                'rows_inserted' => 0,
+                'errors' => []
+            ];
+
+            try {
+                $columns = $this->getTableColumns($tableName);
+                $rows = $this->getTableData($tableName);
+                $tableReport['rows_processed'] = count($rows);
+                $tableReport['columns'] = array_column($columns, 'Field');
+
+                if (!empty($rows)) {
+                    $documents = $this->convertToMongoDocuments($rows, $columns);
+                    $result = $this->insertIntoMongoDB($tableName, $documents);
+                    $tableReport['rows_inserted'] = $result->getInsertedCount();
+                }
+
+                Log::info("Migrated table: $tableName ({$tableReport['rows_inserted']} rows)");
+            } catch (Exception $e) {
+                $errorMsg = "Error migrating table $tableName: " . $e->getMessage();
+                $tableReport['errors'][] = $errorMsg;
+                Log::error($errorMsg);
+            }
+
+            $this->report['tables'][] = $tableReport;
+        }
+
+        private function getTableColumns($tableName)
+        {
+            return $this->mysqlConnection->select("SHOW COLUMNS FROM `$tableName`");
+        }
+
+        private function getTableData($tableName)
+        {
+            return $this->mysqlConnection->table($tableName)->get()->toArray();
+        }
+
+        private function convertToMongoDocuments($rows, $columns)
+        {
+            $documents = [];
+            $columnMap = array_column($columns, 'Type', 'Field');
+
+            foreach ($rows as $row) {
+                $document = [];
+                foreach ((array)$row as $key => $value) {
+                    if ($value === null) {
+                        $document[$key] = null;
+                        continue;
+                    }
+
+                    $type = strtolower($columnMap[$key] ?? '');
+                    $document[$key] = $this->convertValue($value, $type);
+                }
+
+                // Handle primary key
+                if (isset($document['id'])) {
+                    $document['_id'] = (string) $document['id'];
+                    unset($document['id']);
+                }
+
+                $documents[] = $document;
+            }
+
+            return $documents;
+        }
+
+        private function convertValue($value, $type)
+        {
+            if (strpos($type, 'int') === 0) {
+                return (int) $value;
+            } elseif (strpos($type, 'decimal') === 0 || 
+                     strpos($type, 'float') === 0 || 
+                     strpos($type, 'double') === 0) {
+                return (float) $value;
+            } elseif (strpos($type, 'bool') === 0) {
+                return (bool) $value;
+            } elseif (strpos($type, 'json') === 0) {
+                return is_string($value) ? json_decode($value, true) ?? $value : $value;
+            } elseif (strpos($type, 'date') === 0 || 
+                     strpos($type, 'time') === 0) {
+                return new MongoDB\BSON\UTCDateTime(strtotime($value) * 1000);
+            }
+            return $value;
+        }
+
+        private function insertIntoMongoDB($collectionName, $documents)
+        {
+            $collection = $this->mongoDb->selectCollection($collectionName);
+            return $collection->insertMany($documents);
+        }
+
+        private function generateReport()
+        {
+            $timestamp = now()->format('Ymd_His');
+            $reportFile = storage_path("logs/migration_report_{$timestamp}.json");
+            
+            file_put_contents($reportFile, json_encode($this->report, JSON_PRETTY_PRINT));
+            
+            Log::info("Migration completed. Report saved to: $reportFile");
+        }
+    }
+}
