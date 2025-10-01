@@ -36,30 +36,27 @@ return [
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false,
             ] : [],
         ],
-
-        'mongodb' => [
-            'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI', env('ORMONGO_RS_URL')),
-            'options' => [
-                'replicaSet' => '7e67689a3051423084d376fca156b8cf',
-                'ssl' => true,
-                'retryWrites' => true,
-                'w' => 'majority',
-                'readConcern' => [
-                    'level' => 'majority'
-                ],
-                'readPreference' => 'primaryPreferred',
-                'authSource' => 'admin',
-                'maxPoolSize' => 100,
-                'minPoolSize' => 5,
-                'maxIdleTimeMS' => 60000,
-                'serverSelectionTimeoutMS' => 30000,
-                'connectTimeoutMS' => 15000,
-                'socketTimeoutMS' => 30000,
-                'heartbeatFrequencyMS' => 10000,
-                'serverSelectionTryOnce' => false,
-            ]
-        ],
+                    
+            'mongodb' => [
+                'driver' => 'mongodb',
+                'dsn' => env('MONGODB_URI', 'mongodb://' . 
+                    urlencode(env('ORMONGO_USERNAME', '')) . ':' . 
+                    urlencode(env('ORMONGO_PASSWORD', '')) . '@' . 
+                    'iad2-c19-2.mongo.objectrocket.com:53165,iad2-c19-0.mongo.objectrocket.com:53165,iad2-c19-1.mongo.objectrocket.com' . 
+                    '/gym_management?replicaSet=7e67689a3051423084d376fca156b8cf&ssl=true&authSource=admin'),
+                'database' => 'gym_management',
+                'options' => [
+                    'replicaSet' => '7e67689a3051423084d376fca156b8cf',
+                    'ssl' => true,
+                    'retryWrites' => true,
+                    'w' => 'majority',
+                    'readConcern' => [
+                        'level' => 'majority'
+                    ],
+                    'readPreference' => 'primaryPreferred',
+                    'authSource' => 'admin',
+                ]
+            ],
 
         'mariadb' => [
             'driver' => 'mariadb',
