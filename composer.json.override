@@ -1,0 +1,12 @@
+{
+    "require": {
+        "ext-mongodb": "*",
+        "mongodb/mongodb": "^1.19.0",
+        "jenssegers/mongodb": "^4.0.0"
+    },
+    "config": {
+        "platform": {
+            "php": "8.1.0"
+        }
+    }
+}
