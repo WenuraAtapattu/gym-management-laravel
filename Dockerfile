@@ -42,10 +42,10 @@ COPY --chown=www-data:www-data composer.json composer.lock /app/
 COPY --chown=www-data:www-data package*.json /app/
 COPY --chown=www-data:www-data vite.config.js /app/
 
-# Create resources directory
-RUN mkdir -p /app/resources
+# Create resources directory structure
+RUN mkdir -p /app/resources/css /app/resources/js /app/resources/views /app/resources/markdown
 
-# Copy resources directory
+# Copy resources directory structure
 COPY --chown=www-data:www-data resources /app/resources/
 
 # Install npm dependencies
