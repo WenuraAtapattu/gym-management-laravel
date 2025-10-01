@@ -80,9 +80,12 @@ RUN if [ ! -f .env ]; then \
 # Generate application key if not set
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
 
+# Create build directory and set permissions
+RUN mkdir -p /app/public/build && \
+    chown -R www-data:www-data /app/public/build
+
 # Build assets
 RUN cd /app && \
-    mkdir -p public/build && \
     npm run build
 
 # Ensure the build directory has the correct permissions
