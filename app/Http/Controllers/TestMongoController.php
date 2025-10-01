@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
-use MongoDB\Driver\Manager;
-use MongoDB\Driver\Command;
-use MongoDB\Driver\Exception\ConnectionTimeoutException;
-use MongoDB\Driver\Exception\RuntimeException;
+use MongoDB\Client as MongoClient;
+use MongoDB\Driver\Exception\ConnectionTimeoutException as MongoConnectionTimeoutException;
+use MongoDB\Driver\Exception\RuntimeException as MongoRuntimeException;
 
 class TestMongoController extends Controller
 {
@@ -22,19 +21,20 @@ class TestMongoController extends Controller
         }
 
         try {
-            $manager = new Manager($this->buildDsn($config));
-            $command = new Command(['ping' => 1]);
-            $manager->executeCommand('admin', $command);
+            $client = new MongoClient($config['dsn'], $config['options'] ?? []);
+            // Try to list databases to test the connection
+            $client->listDatabases();
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'MongoDB connection successful'
+                'message' => 'MongoDB connection successful',
+                'server_info' => $client->getManager()->getServers()
             ]);
 
-        } catch (ConnectionTimeoutException $e) {
-            return $this->handleError('Connection timeout', $e);
-        } catch (RuntimeException $e) {
-            return $this->handleError('MongoDB error', $e);
+        } catch (MongoConnectionTimeoutException $e) {
+            return $this->handleError('MongoDB connection timeout: ' . $e->getMessage(), $e);
+        } catch (MongoRuntimeException $e) {
+            return $this->handleError('MongoDB runtime error: ' . $e->getMessage(), $e);
         } catch (\Exception $e) {
             return $this->handleError('Unexpected error', $e);
         }

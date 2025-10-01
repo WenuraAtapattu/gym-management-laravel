@@ -25944,14 +25944,14 @@ namespace  {
         /**
          * Merge an array of bindings into our bindings.
          *
-         * @param self $query
-         * @return \Illuminate\Database\Eloquent\Builder<static>
+         * @param \Illuminate\Database\Query\Builder $query
+         * @return \Illuminate\Database\Query\Builder
          * @static
          */
         public static function mergeBindings($query)
         {
             /** @var \Illuminate\Database\Query\Builder $instance */
-            return $instance->mergeBindings($query);
+            return $instance->mergeBindings($query instanceof \Illuminate\Database\Eloquent\Builder ? $query->getQuery() : $query);
         }
 
         /**

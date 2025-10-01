@@ -191,92 +191,6 @@ namespace App\Models{
 
 namespace App\Models{
 /**
- * @property-read mixed $id
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel aggregate($function = null, $columns = [])
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel getConnection()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel insert(array $values)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel insertGetId(array $values, $sequence = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel newModelQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel newQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel query()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel raw($value = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoModel vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
- */
-	class MongoModel extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property-read mixed $id
- * @property-write mixed $price
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct active()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct aggregate($function = null, $columns = [])
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct featured()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct getConnection()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct inStock()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct insert(array $values)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct insertGetId(array $values, $sequence = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct newModelQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct newQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct query()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct raw($value = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoProduct vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
- */
-	class MongoProduct extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property-read mixed $id
- * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $reviewable
- * @property-read \App\Models\MongoUser|null $user
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview aggregate($function = null, $columns = [])
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview approved()
- * @method static \Database\Factories\MongoReviewFactory factory($count = null, $state = [])
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview getConnection()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview guest()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview insert(array $values)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview insertGetId(array $values, $sequence = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview newModelQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview newQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview pending()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview query()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview raw($value = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoReview vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
- */
-	class MongoReview extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * @property-read mixed $id
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
- * @property-read int|null $notifications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
- * @property-read int|null $tokens_count
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser addHybridHas(\Illuminate\Database\Eloquent\Relations\Relation $relation, string $operator = '>=', string $count = 1, string $boolean = 'and', ?\Closure $callback = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser aggregate($function = null, $columns = [])
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser getConnection()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser insert(array $values)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser insertGetId(array $values, $sequence = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser newModelQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser newQuery()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser query()
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser raw($value = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser search(\MongoDB\Builder\Type\SearchOperatorInterface|array $operator, ?string $index = null, ?array $highlight = null, ?bool $concurrent = null, ?string $count = null, ?string $searchAfter = null, ?string $searchBefore = null, ?bool $scoreDetails = null, ?array $sort = null, ?bool $returnStoredSource = null, ?array $tracking = null)
- * @method static \MongoDB\Laravel\Eloquent\Builder<static>|MongoUser vectorSearch(string $index, string $path, array $queryVector, int $limit, bool $exact = false, \MongoDB\Builder\Type\QueryInterface|array $filter = [], ?int $numCandidates = null)
- */
-	class MongoUser extends \Eloquent implements \Illuminate\Contracts\Auth\Authenticatable {}
-}
-
-namespace App\Models{
-/**
  * @property int $id
  * @property int $user_id
  * @property int|null $shipping_id
@@ -475,20 +389,18 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\CartItem> $cartItems
- * @property-read int|null $cart_items_count
  * @property-read \App\Models\Category|null $category
  * @property-read int|null $discount_percentage
  * @property-read string|null $formatted_compare_at_price
  * @property-read string $formatted_price
+ * @property-read string|null $formatted_savings
  * @property-read string|null $image_url
  * @property-read bool $in_stock
- * @property-read bool $on_sale
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\OrderItem> $orderItems
- * @property-read int|null $order_items_count
+ * @property-read bool $is_in_stock
+ * @property-read bool $is_on_sale
+ * @property-read int|null $savings_percentage
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Review> $reviews
  * @property-read int|null $reviews_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product active()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product bestsellers()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product featured()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product inStock()
@@ -530,22 +442,59 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property int $reviewable_id
- * @property string $reviewable_type
  * @property int $user_id
- * @property string|null $guest_name
- * @property string|null $guest_email
+ * @property int $review_id
+ * @property string $reason
+ * @property string $status
+ * @property int|null $resolved_by
+ * @property \Illuminate\Support\Carbon|null $resolved_at
+ * @property string|null $resolution_notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $resolver
+ * @property-read \App\Models\Review $review
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report pending()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereResolutionNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereResolvedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereResolvedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereReviewId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Report whereUserId($value)
+ */
+	class Report extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $reviewable_type
+ * @property int $reviewable_id
+ * @property int $user_id
  * @property int $rating
  * @property string $title
  * @property string|null $comment
+ * @property string|null $content
  * @property bool $is_approved
  * @property string|null $ip_address
  * @property string|null $user_agent
+ * @property string|null $guest_name
+ * @property string|null $guest_email
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property mixed $content
  * @property-read string $reviewer_name
- * @property-read \App\Models\Product $product
+ * @property-read \Spatie\MediaLibrary\MediaCollections\Models\Collections\MediaCollection<int, \Spatie\MediaLibrary\MediaCollections\Models\Media> $media
+ * @property-read int|null $media_count
+ * @property-read \App\Models\Product|null $product
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Report> $reports
+ * @property-read int|null $reports_count
  * @property-read \Illuminate\Database\Eloquent\Model|\Eloquent $reviewable
  * @property-read \App\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review approved(bool $approved = true)
@@ -555,6 +504,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review pending()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereGuestEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereGuestName($value)
@@ -569,7 +519,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereUserAgent($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Review whereUserId($value)
  */
-	class Review extends \Eloquent {}
+	class Review extends \Eloquent implements \Spatie\MediaLibrary\HasMedia {}
 }
 
 namespace App\Models{
@@ -587,6 +537,12 @@ namespace App\Models{
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property string|null $phone
+ * @property string|null $street
+ * @property string|null $city
+ * @property string|null $state
+ * @property string|null $postal_code
+ * @property string|null $country
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $two_factor_secret
@@ -613,6 +569,8 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCurrentTeamId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereDeletedAt($value)
@@ -622,8 +580,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereIsAdmin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePostalCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereProfilePhotoPath($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereStreet($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorConfirmedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorRecoveryCodes($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereTwoFactorSecret($value)
