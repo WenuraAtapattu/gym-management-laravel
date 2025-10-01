@@ -7,8 +7,15 @@ return [
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority&appName=Cluster0',
+            'dsn' => 'mongodb://heroku_user:798200305v@ac-mqgtkcu-shard-00-00.qi715iy.mongodb.net,ac-mqgtkcu-shard-00-01.qi715iy.mongodb.net,ac-mqgtkcu-shard-00-02.qi715iy.mongodb.net/laravel_sem2?replicaSet=atlas-14ixry-shard-0&ssl=true&authSource=admin',
             'database' => 'laravel_sem2',
+            'options' => [
+                'ssl' => true,
+                'replicaSet' => 'atlas-14ixry-shard-0',
+                'authSource' => 'admin',
+                'retryWrites' => true,
+                'w' => 'majority',
+            ],
         ],
         'mysql' => [
             'driver' => 'mysql',
