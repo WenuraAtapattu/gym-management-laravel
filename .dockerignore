@@ -4,18 +4,18 @@
 .gitattributes
 
 # IDE
-.vscode
-.idea
+.vscode/
+.idea/
 
 # Node
 node_modules/
 npm-debug.log
 yarn-error.log
 
-# Build directories
-public/build
+# Build directories (but not the source files)
+public/build/
 public/hot
-public/storage
+public/storage/
 
 # Environment files (will be handled separately)
 .env
@@ -39,15 +39,36 @@ Homestead.json
 Homestead.yaml
 Homestead.yaml.backup
 Homestead.json.backup
-npm-debug.log
-yarn-error.log
-.phpunit.result.cache
-.php_cs.cache
-.php-cs-fixer.cache
-.phpunit.cache
 
 # Testing
-/coverage
+/coverage/
+
+# Exclude everything else except what we need
+/*
+!/app
+!/bootstrap
+!/config
+!/database
+!/public
+!/resources
+!/routes
+!/storage
+!/tests
+!/vendor
+!/*.php
+!/.htaccess
+!/artisan
+!/composer.*
+!/package*.json
+!/vite.config.js
+!/webpack.mix.js
+!/webpack.config.js
+!/postcss.config.js
+!/tailwind.config.js
+!/phpunit.xml
+!/phpcs.xml
+!/phpstan.neon
+!/pint.json
 
 # Local development
 .env.local

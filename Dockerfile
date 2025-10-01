@@ -35,21 +35,13 @@ RUN mkdir -p ${NVM_DIR} \
 WORKDIR /app
 
 # Create necessary directories
-RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build /app/resources/css /app/resources/js
+RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
 
-# Set proper ownership
-RUN chown -R www-data:www-data /app
-
-# Copy package files and config
+# Copy only the necessary files first
+COPY --chown=www-data:www-data composer.json composer.lock /app/
 COPY --chown=www-data:www-data package*.json /app/
 COPY --chown=www-data:www-data vite.config.js /app/
-
-# Copy the entire application
-COPY --chown=www-data:www-data . /app/
-
-# Set proper permissions
-RUN chown -R www-data:www-data /app && \
-    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build
+COPY --chown=www-data:www-data resources/ /app/resources/
 
 # Install npm dependencies
 RUN npm install --legacy-peer-deps --no-fund --no-audit
@@ -57,13 +49,8 @@ RUN npm install --legacy-peer-deps --no-fund --no-audit
 # Install PHP dependencies
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
-# Verify resources are copied
-RUN echo "=== Resources directory ===" && \
-    ls -la /app/resources/ && \
-    echo "\n=== CSS directory ===" && \
-    ls -la /app/resources/css/ && \
-    echo "\n=== JS directory ===" && \
-    ls -la /app/resources/js/
+# Copy the rest of the application
+COPY --chown=www-data:www-data . /app/
 
 # Set proper permissions
 RUN chown -R www-data:www-data /app && \
@@ -88,19 +75,15 @@ RUN echo "=== Current working directory ===" && \
     echo "\n=== CSS directory ===" && \
     ls -la /app/resources/css/ && \
     echo "\n=== JS directory ===" && \
-    ls -la /app/resources/js/ && \
-    echo "\n=== Vite config ===" && \
-    cat /app/vite.config.js
+    ls -la /app/resources/js/
 
 # Build assets
 RUN cd /app && \
     npm run build
 
-# Ensure the build directory has the correct permissions
-RUN chown -R www-data:www-data /app/public/build
-
 # Set proper permissions after build
-RUN chown -R www-data:www-data /app/public/build
+RUN chown -R www-data:www-data /app/public/build && \
+    chmod -R 755 /app/public/build
 
 # Optimize Laravel
 RUN php artisan config:cache \
@@ -113,4 +96,4 @@ WORKDIR /app/public
 EXPOSE 8000
 
 # Start the application
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+CMD ["php", "../artisan", "serve", "--host=0.0.0.0", "--port=8000"]
