@@ -59,11 +59,8 @@ RUN chown -R www-data:www-data /app && \
 # Install PHP dependencies with optimization
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 
-# Copy environment files
-COPY --chown=www-data:www-data .env.example .env
-COPY --chown=www-data:www-data .env.mongodb.example .env.mongodb
-COPY --chown=www-data:www-data .env.testing .env.testing
-COPY --chown=www-data:www-data .env.testing.mongodb .env.testing.mongodb
+# Copy environment files (using shell glob to handle hidden files)
+COPY --chown=www-data:www-data .env* ./
 
 # Generate application key if not set
 RUN if grep -q '^APP_KEY=$' .env; then \
