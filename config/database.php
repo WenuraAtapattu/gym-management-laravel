@@ -7,15 +7,8 @@ return [
     'connections' => [
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority&tls=true',
-            'database' => 'laravel_sem2',
-            'options' => [
-                'tls' => true,
-                'tlsAllowInvalidCertificates' => true,
-                'tlsAllowInvalidHostnames' => true,
-                'retryWrites' => true,
-                'w' => 'majority',
-            ],
+            'dsn' => env('MONGODB_URI', 'mongodb+srv://heroku_user:798200305v@cluster0.qi715iy.mongodb.net/laravel_sem2?retryWrites=true&w=majority'),
+            'database' => env('MONGODB_DATABASE', 'laravel_sem2'),
         ],
         'mysql' => [
             'driver' => 'mysql',
