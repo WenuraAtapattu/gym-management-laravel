@@ -39,16 +39,11 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'host' => env('MONGODB_HOST', '127.0.0.1'),
-            'port' => env('MONGODB_PORT', 27017),
-            'database' => env('MONGODB_DATABASE', 'gym_management'),
-            'username' => env('MONGODB_USERNAME', ''),
-            'password' => env('MONGODB_PASSWORD', ''),
-            'dsn' => env('MONGODB_DSN', null),
+            'dsn' => env('ORMONGO_RS_URL'),
+            'database' => 'gym_management',
             'options' => [
-                'database' => env('MONGODB_AUTH_SOURCE', 'admin'),
-                'tls' => env('MONGODB_TLS', false),
-                'tlsInsecure' => env('MONGODB_TLS_INSECURE', false),
+                'replicaSet' => 'rs',
+                'ssl' => true,
                 'retryWrites' => true,
                 'w' => 'majority',
                 'readConcern' => [
@@ -61,16 +56,7 @@ return [
                 'serverSelectionTimeoutMS' => 30000,
                 'connectTimeoutMS' => 10000,
                 'socketTimeoutMS' => 30000,
-            ],
-            'driver_options' => [
-                'context' => stream_context_create([
-                    'ssl' => [
-                        'verify_peer' => env('MONGODB_VERIFY_PEER', false),
-                        'verify_peer_name' => env('MONGODB_VERIFY_PEER_NAME', false),
-                        'allow_self_signed' => env('MONGODB_ALLOW_SELF_SIGNED', true),
-                    ]
-                ])
-            ],
+            ]
         ],
 
         'mariadb' => [
