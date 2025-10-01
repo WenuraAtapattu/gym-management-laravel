@@ -39,11 +39,8 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => 'mongodb://' . implode(',', [
-                'iad2-c19-2.mongo.objectrocket.com:53165',
-                'iad2-c19-0.mongo.objectrocket.com:53165',
-                'iad2-c19-1.mongo.objectrocket.com:53165'
-            ]) . '/gym_management?replicaSet=7e67689a3051423084d376fca156b8cf&ssl=true',
+            'dsn' => env('ORMONGO_RS_URL'),
+            'database' => 'gym_management',
             'options' => [
                 'replicaSet' => '7e67689a3051423084d376fca156b8cf',
                 'ssl' => true,
