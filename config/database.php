@@ -42,14 +42,15 @@ return [
             'dsn' => env('ORMONGO_RS_URL'),
             'database' => 'gym_management',
             'options' => [
-                'replicaSet' => '7e67689a3051423084d376fca156b8cf', // The replica set name from ORMONGO_RS_URL
                 'ssl' => true,
+                'replicaSet' => 'rs',
                 'retryWrites' => true,
                 'w' => 'majority',
                 'readConcern' => [
                     'level' => 'majority'
                 ],
                 'readPreference' => 'primaryPreferred',
+                'authSource' => 'admin',
                 'maxPoolSize' => 100,
                 'minPoolSize' => 5,
                 'maxIdleTimeMS' => 60000,
