@@ -37,44 +37,31 @@ WORKDIR /app
 # Create necessary directories
 RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
 
-# Copy package files first
-COPY package*.json /app/
-COPY vite.config.js /app/
+# Create necessary directories
+RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build /app/resources/css /app/resources/js
 
-# Copy only the necessary files for npm install
-COPY resources/ /app/resources/
+# Copy package files first
+COPY --chown=www-data:www-data package*.json /app/
+COPY --chown=www-data:www-data vite.config.js /app/
+
+# Copy resources directory
+COPY --chown=www-data:www-data resources/ /app/resources/
 
 # Install npm dependencies
 RUN npm install --legacy-peer-deps --no-fund --no-audit
 
 # Copy composer files
-COPY composer.json composer.lock /app/
+COPY --chown=www-data:www-data composer.json composer.lock /app/
 
 # Install PHP dependencies without scripts
 RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
-# Create necessary directories
-RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
-
-# Copy application code
+# Copy the rest of the application
 COPY --chown=www-data:www-data . /app/
-
-# Ensure required directories exist
-RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
 
 # Set proper permissions
 RUN chown -R www-data:www-data /app && \
-    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build
-
-# Ensure the resources directory exists
-RUN mkdir -p /app/resources/css /app/resources/js
-
-# Set proper permissions
-RUN chown -R www-data:www-data \
-    /app/storage \
-    /app/bootstrap/cache \
-    /app/public/build \
-    /app/resources
+    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build /app/resources/css /app/resources/js
 
 # Install PHP dependencies with optimization
 RUN composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
