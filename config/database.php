@@ -39,7 +39,7 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'dsn' => rtrim(env('MONGODB_URI', env('ORMONGO_RS_URL')), '/') . '/gym_management',
+                'dsn' => str_replace('?', '/gym_management?', rtrim(env('MONGODB_URI', env('ORMONGO_RS_URL')), '?')),
                 'database' => 'gym_management',
                 'options' => [
                     'replicaSet' => '7e67689a3051423084d376fca156b8cf',
