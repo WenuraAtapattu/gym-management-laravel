@@ -4,12 +4,13 @@ import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'url';
 
 export default defineConfig({
-    root: process.cwd(),
+    root: '/app',
+    base: '/build/',
     plugins: [
         laravel({
             input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
+                '/app/resources/css/app.css',
+                '/app/resources/js/app.js',
             ],
             refresh: true,
         }),

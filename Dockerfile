@@ -81,7 +81,9 @@ RUN if [ ! -f .env ]; then \
 RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || true
 
 # Build assets
-RUN cd /app && npm run build
+RUN cd /app && \
+    mkdir -p public/build && \
+    npm run build
 
 # Ensure the build directory has the correct permissions
 RUN chown -R www-data:www-data /app/public/build
