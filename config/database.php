@@ -39,7 +39,7 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => str_replace('?', '/gym_management?', env('ORMONGO_RS_URL')) . '&authSource=admin',
+            'dsn' => str_replace('?', '/gym_management?', env('ORMONGO_RS_URL')),
             'options' => [
                 'replicaSet' => '7e67689a3051423084d376fca156b8cf',
                 'ssl' => true,
