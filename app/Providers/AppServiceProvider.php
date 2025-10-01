@@ -3,27 +3,42 @@
 namespace App\Providers;
 
 use App\Http\Middleware\MergeGuestCart;
-use App\Models\MongoReview;
 use App\Models\MongoUser;
+use App\Models\MongoReview;
 use App\Observers\MongoReviewObserver;
 use App\Observers\MongoUserObserver;
-use Illuminate\Support\Facades\Schema;
 use App\Services\CartService;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
+use App\View\Components\ActionMessage;
+use App\View\Components\Button;
+use App\View\Components\DangerButton;
+use App\View\Components\DialogModal;
+use App\View\Components\InputError;
+use App\View\Components\Label;
+use App\View\Components\Modal;
+use App\View\Components\SecondaryButton;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services.
      */
-    public function register(): void
+    public function register()
     {
-        $this->app->singleton(CartService::class, function ($app) {
-            return new CartService();
-        });
+        // Register component aliases
+        Blade::component('jet-action-message', ActionMessage::class);
+        Blade::component('jet-button', Button::class);
+        Blade::component('jet-danger-button', DangerButton::class);
+        Blade::component('jet-dialog-modal', DialogModal::class);
+        Blade::component('jet-input-error', InputError::class);
+        Blade::component('jet-label', Label::class);
+        Blade::component('jet-modal', Modal::class);
+        Blade::component('jet-secondary-button', SecondaryButton::class);
     }
 
     /**

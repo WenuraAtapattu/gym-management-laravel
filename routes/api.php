@@ -48,11 +48,11 @@ Route::prefix('mongo')->name('mongo.')->group(function () {
 // MySQL API Routes
 Route::prefix('mysql')->name('mysql.')->group(function () {
     // Products
-    Route::apiResource('products', \App\Http\Controllers\API\ProductController::class)
-        ->names('products');
+    Route::apiResource('products', \App\Http\Controllers\API\MongoProductController::class)
+        ->names('mysql.products');
 
     // Reviews
-    Route::prefix('products/{product}/reviews')->name('products.reviews.')->group(function () {
+    Route::prefix('products/{product}/reviews')->name('mysql.products.reviews.')->group(function () {
         Route::get('/', [\App\Http\Controllers\API\ReviewController::class, 'index'])
             ->name('index');
         Route::get('/{review}', [\App\Http\Controllers\API\ReviewController::class, 'show'])
@@ -83,8 +83,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('payments/{payment}/status', [\App\Http\Controllers\API\PaymentController::class, 'updateStatus'])
         ->name('payments.update-status');
 
-    // Cart
-    Route::prefix('cart')->name('cart.')->group(function () {
+    // Cart (API)
+    Route::prefix('cart')->name('api.cart.')->group(function () {
         Route::get('/', [\App\Http\Controllers\API\CartController::class, 'index'])
             ->name('index');
         Route::post('/items/{product}', [\App\Http\Controllers\API\CartController::class, 'store'])
@@ -116,6 +116,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-// Public review statistics
-Route::get('products/{product}/review-stats', [\App\Http\Controllers\API\ReviewController::class, 'stats'])
-    ->name('products.reviews.stats');
+// Public review statistics (MySQL)
+Route::get('mysql/products/{product}/review-stats', [\App\Http\Controllers\API\ReviewController::class, 'stats'])
+    ->name('mysql.products.reviews.public-stats');
+
+// Public review statistics (MongoDB)
+Route::get('mongo/products/{product}/review-stats', [\App\Http\Controllers\API\MongoReviewController::class, 'stats'])
+    ->name('mongo.products.reviews.public-stats');

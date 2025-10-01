@@ -1,16 +1,11 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
-import { fileURLToPath, URL } from 'url';
 
-export default defineConfig(({ command }) => ({
-    base: command === 'build' ? '/build/' : '',
+export default defineConfig({
     plugins: [
         laravel({
-            input: [
-                'resources/css/app.css',
-                'resources/js/app.js',
-            ],
+            input: ['resources/css/app.css', 'resources/js/app.js'],
             refresh: true,
         }),
         vue({
@@ -24,23 +19,7 @@ export default defineConfig(({ command }) => ({
     ],
     resolve: {
         alias: {
-            '@': fileURLToPath(new URL('./resources/js', import.meta.url)),
-            '~': fileURLToPath(new URL('./node_modules', import.meta.url)),
+            '~bootstrap': 'bootstrap',
         },
     },
-    build: {
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ['vue', 'axios'],
-                },
-            },
-        },
-        chunkSizeWarningLimit: 1000,
-    },
-    server: {
-        hmr: {
-            host: 'localhost',
-        },
-    },
-}));
+});

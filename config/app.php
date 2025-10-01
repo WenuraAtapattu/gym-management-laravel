@@ -49,6 +49,9 @@ return [
         
         // MongoDB Service Provider
         App\Providers\MongoDBServiceProvider::class,
+        
+        // Jetstream Service Provider
+        App\Providers\JetstreamServiceProvider::class,
     ],
 
     'aliases' => [

@@ -102,8 +102,8 @@ Route::middleware('auth')->group(function () {
     // Payments
     Route::get('/payments', \App\Livewire\Admin\Payments\Index::class)->name('payments');
 
-    // Cart Routes
-    Route::prefix('cart')->name('cart.')->group(function () {
+    // Cart Routes (Web)
+    Route::prefix('cart')->name('web.cart.')->group(function () {
         Route::get('/', [CartController::class, 'index'])->name('index');
         Route::post('/{product}', [CartController::class, 'store'])
              ->where('product', '[0-9]+')
