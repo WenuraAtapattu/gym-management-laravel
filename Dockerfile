@@ -56,8 +56,14 @@ RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 # Create necessary directories
 RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
 
-# Copy the rest of the application
-COPY . .
+# Copy the rest of the application, excluding node_modules and vendor
+COPY --chown=www-data:www-data . .
+
+# Explicitly copy resources directory
+COPY --chown=www-data:www-data resources/ /app/resources/
+
+# Ensure the resources directory has the correct permissions
+RUN chown -R www-data:www-data /app/resources
 
 # Ensure the resources directory exists
 RUN mkdir -p /app/resources/css /app/resources/js
@@ -83,6 +89,18 @@ RUN grep -q '^APP_KEY=$' .env && php artisan key:generate --no-interaction || tr
 # Create build directory and set permissions
 RUN mkdir -p /app/public/build && \
     chown -R www-data:www-data /app/public/build
+
+# Debug file structure
+RUN echo "=== Current working directory ===" && \
+    pwd && \
+    echo "\n=== Resources directory ===" && \
+    ls -la /app/resources/ && \
+    echo "\n=== CSS directory ===" && \
+    ls -la /app/resources/css/ && \
+    echo "\n=== JS directory ===" && \
+    ls -la /app/resources/js/ && \
+    echo "\n=== Vite config ===" && \
+    cat /app/vite.config.js
 
 # Build assets
 RUN cd /app && \
