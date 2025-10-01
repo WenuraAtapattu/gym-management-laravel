@@ -1,10 +1,14 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
-import { fileURLToPath, URL } from 'url';
+import { fileURLToPath } from 'url';
+import { dirname, resolve } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export default defineConfig({
-    root: process.cwd(),
+    root: '/app',
     base: '/build/',
     plugins: [
         laravel({

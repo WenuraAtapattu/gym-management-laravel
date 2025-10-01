@@ -56,14 +56,15 @@ RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 # Create necessary directories
 RUN mkdir -p /app/storage /app/bootstrap/cache /app/public/build
 
-# Copy the rest of the application, excluding node_modules and vendor
-COPY --chown=www-data:www-data . .
+# Copy application code
+COPY --chown=www-data:www-data . /app/
 
-# Explicitly copy resources directory
-COPY --chown=www-data:www-data resources/ /app/resources/
+# Ensure required directories exist
+RUN mkdir -p /app/resources/css /app/resources/js /app/public/build
 
-# Ensure the resources directory has the correct permissions
-RUN chown -R www-data:www-data /app/resources
+# Set proper permissions
+RUN chown -R www-data:www-data /app && \
+    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build
 
 # Ensure the resources directory exists
 RUN mkdir -p /app/resources/css /app/resources/js
