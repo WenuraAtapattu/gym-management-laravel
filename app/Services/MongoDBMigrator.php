@@ -302,7 +302,7 @@ class MongoDBMigrator
     {
         try {
             if (class_exists('MongoDB\\BSON\\UTCDateTime')) {
-                return new MongoUTCDateTime($milliseconds);
+                return new \MongoDB\BSON\UTCDateTime($milliseconds);
             }
             
             // Fallback for when the MongoDB extension is not properly loaded
