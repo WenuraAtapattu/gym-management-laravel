@@ -39,14 +39,10 @@ return [
                     
             'mongodb' => [
                 'driver' => 'mongodb',
-                'host' => env('DB_HOST', '127.0.0.1'),
-                'port' => env('DB_PORT', 27017),
-                'database' => env('DB_DATABASE', 'gym_management'),
-                'username' => env('DB_USERNAME'),
-                'password' => env('DB_PASSWORD'),
+                'dsn' => 'mongodb+srv://heroku_user:79820035v@cluster0.qi715iy.mongodb.net/gym_management?retryWrites=true&w=majority',
+                'database' => 'gym_management',
                 'options' => [
                     'tls' => true,
-                    'tlsAllowInvalidCertificates' => false,
                     'authSource' => 'admin',
                     'retryWrites' => true,
                     'w' => 'majority',
