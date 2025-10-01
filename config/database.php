@@ -42,7 +42,7 @@ return [
             'dsn' => env('ORMONGO_RS_URL'),
             'database' => 'gym_management',
             'options' => [
-                'replicaSet' => 'rs',
+                'replicaSet' => '7e67689a3051423084d376fca156b8cf', // The replica set name from ORMONGO_RS_URL
                 'ssl' => true,
                 'retryWrites' => true,
                 'w' => 'majority',
@@ -53,9 +53,20 @@ return [
                 'maxPoolSize' => 100,
                 'minPoolSize' => 5,
                 'maxIdleTimeMS' => 60000,
-                'serverSelectionTimeoutMS' => 30000,
-                'connectTimeoutMS' => 10000,
-                'socketTimeoutMS' => 30000,
+                'serverSelectionTimeoutMS' => 60000,
+                'connectTimeoutMS' => 15000,
+                'socketTimeoutMS' => 45000,
+                'heartbeatFrequencyMS' => 10000,
+                'serverSelectionTryOnce' => false,
+            ],
+            'driver_options' => [
+                'context' => stream_context_create([
+                    'ssl' => [
+                        'verify_peer' => false,
+                        'verify_peer_name' => false,
+                        'allow_self_signed' => true,
+                    ]
+                ])
             ]
         ],
 
