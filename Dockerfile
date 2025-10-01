@@ -44,8 +44,18 @@ RUN chown -R www-data:www-data /app
 COPY --chown=www-data:www-data package*.json /app/
 COPY --chown=www-data:www-data vite.config.js /app/
 
-# Copy resources directory first
-COPY --chown=www-data:www-data resources/ /app/resources/
+# Copy the entire application
+COPY --chown=www-data:www-data . /app/
+
+# Set proper permissions
+RUN chown -R www-data:www-data /app && \
+    chmod -R 755 /app/storage /app/bootstrap/cache /app/public/build
+
+# Install npm dependencies
+RUN npm install --legacy-peer-deps --no-fund --no-audit
+
+# Install PHP dependencies
+RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
 
 # Verify resources are copied
 RUN echo "=== Resources directory ===" && \
@@ -54,18 +64,6 @@ RUN echo "=== Resources directory ===" && \
     ls -la /app/resources/css/ && \
     echo "\n=== JS directory ===" && \
     ls -la /app/resources/js/
-
-# Install npm dependencies
-RUN npm install --legacy-peer-deps --no-fund --no-audit
-
-# Copy composer files
-COPY --chown=www-data:www-data composer.json composer.lock /app/
-
-# Install PHP dependencies
-RUN composer install --no-interaction --no-scripts --no-dev --no-autoloader
-
-# Copy the rest of the application (excluding node_modules and vendor)
-COPY --chown=www-data:www-data . /app/
 
 # Set proper permissions
 RUN chown -R www-data:www-data /app && \
