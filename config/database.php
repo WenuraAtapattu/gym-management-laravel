@@ -27,16 +27,16 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'host' => env('DB_HOST_MONGO', '127.0.0.1'),
-            'port' => env('DB_PORT_MONGO', 27017),
-            'database' => env('DB_DATABASE_MONGO', 'gym_management'),
-            'username' => env('DB_USERNAME_MONGO', ''),
-            'password' => env('DB_PASSWORD_MONGO', ''),
+            'dsn' => env('MONGODB_URI', 'mongodb://127.0.0.1:27017'),
+            'database' => env('MONGODB_DATABASE', 'gym_management'),
+            'username' => env('MONGODB_USERNAME', ''),
+            'password' => env('MONGODB_PASSWORD', ''),
             'options' => [
-                'authSource' => env('DB_AUTH_SOURCE', 'admin'),
-                'ssl' => env('DB_SSL', false),
+                'authSource' => env('MONGODB_AUTH_SOURCE', 'admin'),
+                'retryWrites' => true,
+                'w' => 'majority',
+                'ssl' => false,
             ],
-            'dsn' => env('MONGODB_URI', 'mongodb://127.0.0.1:27017/gym_management'),
         ],
     ],
 

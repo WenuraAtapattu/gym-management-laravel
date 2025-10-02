@@ -14,25 +14,25 @@ class CheckMongoConnection
 {
     public function handle(Request $request, Closure $next)
     {
-        $config = config('database.connections.mongodb', []);
-        
-        if (empty($config)) {
-            return $this->errorResponse('MongoDB configuration not found', 500);
-        }
-
         try {
-            $manager = new Manager($this->buildDsn($config));
-            $command = new Command(['ping' => 1]);
-            $manager->executeCommand('admin', $command);
+            $config = config('database.connections.mongodb', []);
+            
+            if (empty($config) || empty($config['dsn'])) {
+                return $this->errorResponse('MongoDB configuration not found or invalid', 500);
+            }
+
+            // Test MongoDB connection
+            $client = new \MongoDB\Client($config['dsn'], $config['options'] ?? []);
+            $client->listDatabases();
             
             return $next($request);
 
-        } catch (ConnectionTimeoutException $e) {
+        } catch (\MongoDB\Driver\Exception\ConnectionTimeoutException $e) {
             return $this->errorResponse('MongoDB connection timeout', 503);
-        } catch (RuntimeException $e) {
+        } catch (\MongoDB\Driver\Exception\RuntimeException $e) {
             return $this->errorResponse('MongoDB error: ' . $e->getMessage());
         } catch (\Exception $e) {
-            return $this->errorResponse('Unexpected error', 500);
+            return $this->errorResponse('Unexpected error: ' . $e->getMessage(), 500);
         }
     }
 

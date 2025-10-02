@@ -12,15 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Disable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        
         // Drop tables in the correct order to avoid foreign key constraint issues
-        if (Schema::hasTable('attendances')) {
-            Schema::drop('attendances');
-        }
-        
-        // Keep memberships table
+        Schema::dropIfExists('attendances');
         
         // Drop other tables that don't have dependencies
         Schema::dropIfExists('reviews');
@@ -29,9 +22,6 @@ return new class extends Migration
         // Schema::dropIfExists('cart_items');
         // Schema::dropIfExists('carts');
         Schema::dropIfExists('categories');
-        
-        // Re-enable foreign key checks
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 
     /**
