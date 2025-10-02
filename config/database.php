@@ -27,7 +27,7 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => rtrim(env('MONGODB_URI'), '/') . '/?retryWrites=true&w=majority',
+            'dsn' => env('MONGODB_URI') ? rtrim(env('MONGODB_URI'), '/') . '/?retryWrites=true&w=majority' : null,
             'database' => 'laravel_sem2',
             'options' => [
                 'ssl' => true,
