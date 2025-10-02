@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use MongoDB\Client as MongoDBClient;
 use App\Services\MongoLogger;
 
 // Test database connections
@@ -19,8 +20,10 @@ Route::get('/test-db', function () {
     try {
         DB::connection('mongodb')->getMongoClient()->listDatabases();
         $mongo = 'MongoDB connection successful!';
-        // Log a test message to MongoDB
-        MongoLogger::info('Test log message', ['test' => true]);
+        // Log a test message to MongoDB if MongoLogger exists
+        if (class_exists('App\Services\MongoLogger') && method_exists('App\Services\MongoLogger', 'log')) {
+            MongoLogger::log('test_connection', ['test' => true]);
+        }
     } catch (\Exception $e) {
         $mongo = 'MongoDB connection failed: ' . $e->getMessage() . ' in ' . $e->getFile() . ' on line ' . $e->getLine();
     }
@@ -40,7 +43,7 @@ Route::get('/test-mongo', function () {
         $databaseName = env('MONGODB_DATABASE', 'gym_management');
         
         // Create a new MongoDB client
-        $client = new MongoDB\Client($connectionString);
+        $client = new MongoDBClient($connectionString);
         
         // Test the connection by pinging the server
         $response = $client->admin->command(['ping' => 1]);
@@ -104,8 +107,15 @@ Route::get('/fix-foreign-key', function() {
         // First, make category_id nullable
         DB::statement('ALTER TABLE products MODIFY category_id BIGINT UNSIGNED NULL');
         
-        // Then drop the foreign key
-        DB::statement('ALTER TABLE products DROP FOREIGN KEY IF EXISTS products_category_id_foreign');
+        // Drop the foreign key without IF EXISTS
+        try {
+            DB::statement('ALTER TABLE products DROP FOREIGN KEY products_category_id_foreign');
+        } catch (\Exception $e) {
+            // Ignore if foreign key doesn't exist
+            if (!str_contains($e->getMessage(), 'check that it exists')) {
+                throw $e;
+            }
+        }
         
         return response()->json([
             'status' => 'success',
