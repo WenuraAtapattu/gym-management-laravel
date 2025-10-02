@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Welcome</title>
+    <title>404 Not Found</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -28,9 +28,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the Application</h1>
-        <p>{{ $message ?? 'The application is running successfully!' }}</p>
-        <p><a href="/test-db">Test Database Connection</a></p>
+        <h1>404 - Page Not Found</h1>
+        <p>The page you are looking for could not be found.</p>
+        <p><a href="/">Return to Home</a></p>
     </div>
 </body>
 </html>

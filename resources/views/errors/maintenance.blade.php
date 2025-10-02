@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Welcome</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Mode</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -28,9 +30,9 @@
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to the Application</h1>
-        <p>{{ $message ?? 'The application is running successfully!' }}</p>
-        <p><a href="/test-db">Test Database Connection</a></p>
+        <h1>We'll Be Right Back!</h1>
+        <p>{{ $message ?? 'We are performing some maintenance. Please check back soon.' }}</p>
+        <p>Thank you for your patience.</p>
     </div>
 </body>
 </html>
