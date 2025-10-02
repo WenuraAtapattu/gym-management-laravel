@@ -11,32 +11,36 @@ class TestMongoController extends Controller
 {
     public function testConnection(): JsonResponse
     {
-        $config = config('database.connections.mongodb', []);
-        
-        if (empty($config)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'MongoDB configuration not found'
-            ], 500);
-        }
-
         try {
-            $client = new MongoClient($config['dsn'], $config['options'] ?? []);
-            // Try to list databases to test the connection
-            $client->listDatabases();
+            $config = config('database.connections.mongodb', []);
+            
+            if (empty($config) || empty($config['dsn'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'MongoDB configuration not found or invalid',
+                    'config' => $config
+                ], 500);
+            }
 
+            $client = new \MongoDB\Client($config['dsn'], $config['options'] ?? []);
+            $databases = $client->listDatabases();
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'MongoDB connection successful',
-                'server_info' => $client->getManager()->getServers()
+                'database' => $config['database'] ?? 'Not specified',
+                'server_info' => [
+                    'server' => $client->getManager()->getServers(),
+                    'uri' => $config['dsn']
+                ]
             ]);
 
-        } catch (MongoConnectionTimeoutException $e) {
+        } catch (\MongoDB\Driver\Exception\ConnectionTimeoutException $e) {
             return $this->handleError('MongoDB connection timeout: ' . $e->getMessage(), $e);
-        } catch (MongoRuntimeException $e) {
+        } catch (\MongoDB\Driver\Exception\RuntimeException $e) {
             return $this->handleError('MongoDB runtime error: ' . $e->getMessage(), $e);
         } catch (\Exception $e) {
-            return $this->handleError('Unexpected error', $e);
+            return $this->handleError('Unexpected error: ' . $e->getMessage(), $e);
         }
     }
 

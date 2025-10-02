@@ -12,23 +12,34 @@ return new class extends Migration
     public function up(): void
     {
         // Skip if the table doesn't exist
-        if (!Schema::hasTable('fitness_classes')) {
+        if (!Schema::hasTable('fitness_classes') || DB::getDriverName() === 'sqlite') {
             return;
         }
         
-        // Get the foreign key name
-        $foreignKeys = DB::select(
-            "SELECT CONSTRAINT_NAME 
-            FROM information_schema.KEY_COLUMN_USAGE 
-            WHERE TABLE_NAME = 'fitness_classes' 
-            AND COLUMN_NAME = 'instructor_id' 
-            AND REFERENCED_TABLE_NAME = 'instructors'"
-        );
-        
-        // Drop the foreign key if it exists
-        if (!empty($foreignKeys)) {
-            $foreignKeyName = $foreignKeys[0]->CONSTRAINT_NAME;
-            DB::statement("ALTER TABLE fitness_classes DROP FOREIGN KEY `$foreignKeyName`");
+        // For MySQL/MariaDB
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            
+            // Drop the foreign key if it exists using a try-catch block
+            try {
+                Schema::table('fitness_classes', function ($table) {
+                    $table->dropForeign(['instructor_id']);
+                });
+            } catch (\Exception $e) {
+                // Ignore errors if the foreign key doesn't exist
+            }
+            
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        }
+        // For PostgreSQL
+        else if (DB::getDriverName() === 'pgsql') {
+            try {
+                Schema::table('fitness_classes', function ($table) {
+                    $table->dropForeign(['instructor_id']);
+                });
+            } catch (\Exception $e) {
+                // Ignore errors if the foreign key doesn't exist
+            }
         }
     }
 
