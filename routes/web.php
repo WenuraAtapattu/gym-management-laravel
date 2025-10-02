@@ -34,3 +34,12 @@ Route::get('/', function () {
         'message' => 'Welcome to the Gym Management System'
     ]);
 });
+
+// Include explorer routes
+require __DIR__.'/explorer.php';
+
+// Include test routes
+if (app()->environment('local')) {
+    require __DIR__.'/test-data-explorer.php';
+    require __DIR__.'/mongodb-test-route.php';
+}

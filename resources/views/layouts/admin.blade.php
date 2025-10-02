@@ -19,7 +19,7 @@
 </head>
 <body class="font-sans antialiased bg-gray-50">
     <div class="min-h-screen flex flex-col">
-        @include('components.navigation')
+        <x-admin-navigation />
 
         <!-- Page Content -->
         <main class="flex-grow">

@@ -27,13 +27,16 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('MONGODB_URI') ? rtrim(env('MONGODB_URI'), '/') . '/?retryWrites=true&w=majority' : null,
-            'database' => 'laravel_sem2',
+            'host' => env('DB_HOST_MONGO', '127.0.0.1'),
+            'port' => env('DB_PORT_MONGO', 27017),
+            'database' => env('DB_DATABASE_MONGO', 'gym_management'),
+            'username' => env('DB_USERNAME_MONGO', ''),
+            'password' => env('DB_PASSWORD_MONGO', ''),
             'options' => [
-                'ssl' => true,
-                'replicaSet' => 'atlas-14j2qg-shard-0',
-                'authSource' => 'admin',
+                'authSource' => env('DB_AUTH_SOURCE', 'admin'),
+                'ssl' => env('DB_SSL', false),
             ],
+            'dsn' => env('MONGODB_URI', 'mongodb://127.0.0.1:27017/gym_management'),
         ],
     ],
 

@@ -2,14 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use MongoDB\Laravel\Eloquent\Model as Eloquent;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class MongoReview extends Eloquent
+class MongoReview extends MongoModel
 {
-    use HasFactory;
-
-    protected $connection = 'mongodb';
     protected $collection = 'reviews';
 
     /**
@@ -33,7 +30,6 @@ class MongoReview extends Eloquent
      *
      * @var array<string, string>
      */
-
     protected $casts = [
         'rating' => 'integer',
         'created_at' => 'datetime',
@@ -42,30 +38,39 @@ class MongoReview extends Eloquent
 
     /**
      * Get the user that owns the review.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(MongoUser::class, 'user_id');
     }
 
-    public function reviewable()
+    /**
+     * Get the parent reviewable model.
+     */
+    public function reviewable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    // Scopes
+    /**
+     * Scope a query to only include approved reviews.
+     */
     public function scopeApproved($query)
     {
         return $query->where('status', 'approved');
     }
 
+    /**
+     * Scope a query to only include pending reviews.
+     */
     public function scopePending($query)
     {
         return $query->where('status', 'pending');
     }
 
+    /**
+     * Scope a query to only include guest reviews.
+     */
     public function scopeGuest($query)
     {
         return $query->whereNull('user_id');
