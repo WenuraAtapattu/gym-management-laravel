@@ -98,3 +98,25 @@ if (app()->environment('local')) {
     require __DIR__.'/test-data-explorer.php';
     require __DIR__.'/mongodb-test-route.php';
 }
+// Temporary route to fix foreign key issue
+Route::get('/fix-foreign-key', function() {
+    try {
+        // First, make category_id nullable
+        DB::statement('ALTER TABLE products MODIFY category_id BIGINT UNSIGNED NULL');
+        
+        // Then drop the foreign key
+        DB::statement('ALTER TABLE products DROP FOREIGN KEY IF EXISTS products_category_id_foreign');
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Foreign key constraint removed successfully'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ], 500);
+    }
+});
