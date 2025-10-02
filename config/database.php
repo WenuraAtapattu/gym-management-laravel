@@ -27,14 +27,12 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'url' => env('MONGODB_URI'),
+            'dsn' => rtrim(env('MONGODB_URI'), '/') . '/?retryWrites=true&w=majority',
             'database' => 'laravel_sem2',
             'options' => [
                 'ssl' => true,
                 'replicaSet' => 'atlas-14j2qg-shard-0',
                 'authSource' => 'admin',
-                'retryWrites' => true,
-                'w' => 'majority',
             ],
         ],
     ],
