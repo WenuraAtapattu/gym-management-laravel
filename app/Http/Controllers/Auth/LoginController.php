@@ -3,20 +3,33 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Fortify\Fortify;
 
 class LoginController extends Controller
 {
-    use AuthenticatesUsers;
-
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
     protected $redirectTo = '/dashboard';
-    protected $adminRedirectTo = '/admin/dashboard';
-    protected $maxAttempts = 5;
-    protected $decayMinutes = 15;
 
+    /**
+     * Where to redirect admin users after login.
+     *
+     * @var string
+     */
+    protected $adminRedirectTo = '/admin/dashboard';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
@@ -27,6 +40,59 @@ class LoginController extends Controller
      *
      * @return \Illuminate\View\View
      */
+    public function create()
+    {
+        return view('auth.login');
+    }
+
+    /**
+     * Handle an incoming authentication request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            Fortify::username() => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Attempt to authenticate the user
+        $user = User::where('email', $request->email)->first();
+        
+        if ($user && Hash::check($request->password, $user->password)) {
+            Auth::login($user, $request->filled('remember'));
+            
+            // Redirect based on user role
+            if ($user->is_admin) {
+                return redirect()->intended($this->adminRedirectTo);
+            }
+            
+            return redirect()->intended($this->redirectTo);
+        }
+
+        // If authentication fails, redirect back with error
+        return back()->withErrors([
+            'email' => __('auth.failed'),
+        ]);
+    }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy(Request $request)
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/');
+    }
     /**
      * Show the application's login form.
      *
