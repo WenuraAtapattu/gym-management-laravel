@@ -46,6 +46,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Fruitcake\Cors\CorsServiceProvider::class,
 
         // MongoDB Service Provider
         Jenssegers\Mongodb\MongodbServiceProvider::class,
