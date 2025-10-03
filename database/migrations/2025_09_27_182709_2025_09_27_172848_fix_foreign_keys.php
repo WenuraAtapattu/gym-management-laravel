@@ -7,34 +7,23 @@ use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        // Skip this migration for SQLite as it doesn't support the same foreign key operations
-        if (DB::getDriverName() !== 'sqlite') {
+        if (DB::getDriverName() !== 'sqlite' && Schema::hasTable('fitness_classes')) {
             Schema::table('fitness_classes', function (Blueprint $table) {
-                // For MySQL/MariaDB
                 if (DB::getDriverName() === 'mysql') {
                     DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-                    $table->dropForeignIfExists('fitness_classes_instructor_id_foreign');
+                    $table->dropForeign(['instructor_id']);
                     DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-                } 
-                // For PostgreSQL
-                else if (DB::getDriverName() === 'pgsql') {
-                    $table->dropForeignIfExists('fitness_classes_instructor_id_foreign');
+                } else if (in_array(DB::getDriverName(), ['pgsql', 'mysql', 'sqlsrv'])) {
+                    $table->dropForeign(['instructor_id']);
                 }
             });
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        // This migration is not reversible as we don't want to recreate the constraint
-        // that was causing issues
+        // This migration is not reversible
     }
 };
