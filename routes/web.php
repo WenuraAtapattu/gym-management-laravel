@@ -116,6 +116,14 @@ Route::get('/fix-foreign-key', function() {
                 throw $e;
             }
         }
+        Route::get('/check-config', function() {
+            return [
+                'cipher' => config('app.cipher'),
+                'key' => config('app.key'),
+                'env' => config('app.env'),
+                'debug' => config('app.debug'),
+            ];
+        });
         
         return response()->json([
             'status' => 'success',
